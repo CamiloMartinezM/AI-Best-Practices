@@ -35,7 +35,7 @@ About 45 minutes plus discussion: 49 slides including the title, nine section di
 | 22 | 25:00 | A skill: a lab protocol for the agent | A sample-preparation protocol beside an abridged `tdd/SKILL.md`, row for row: the name, when to use it, the steps |
 | 23 | 26:00 | Skills: procedures loaded when needed | Pocock's `tdd/SKILL.md`, its parts marked by when they load: name and description from the start, the body when the skill runs, the files beside it when the steps need them; the skill folders of Claude Code and Codex |
 | 24 | 27:10 | Pocock's skills: an open collection | The repository's address as a link over its screenshot; the skills you type and the skills they call; the install command |
-| 25 | 28:00 | Classic practice, adapted for agents | Six books from 1999 to 2018, the idea the skills take from each and the skills that carry it, user stories for the spec among them; the README's "based on decades of engineering experience" |
+| 25 | 28:00 | Classic practice, adapted for agents | Six books from 1999 to 2018, the idea the skills take from each and the skills that carry it, user stories for the spec among them; the README's "based on decades of engineering experience"; the speaker notes add the README's "Why These Skills Exist" section on five pages of their own |
 | 26 | 29:10 | Pocock's flow: who does what | Person, agent and output across the five stages: spec-driven, then test-first |
 | 27 | 30:20 | A /grill-with-docs session | Example session on the short request: numbered markers for a looked-up fact, a recommended answer and the ADR decision; an arrow to the glossary entry it adds |
 | 28 | 31:40 | The specimen split, stage by stage | What each stage produces for the specimen split, under the columns of slide 26 |

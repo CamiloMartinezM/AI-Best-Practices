@@ -244,6 +244,94 @@ See [tests.md](tests.md) for examples and
       or red and green brings the whole practice into a skill in a few words.}
 \end{frame}
 
+% Pocock's README, section "Why These Skills Exist", word for word (mattpocock/skills, MIT licence;
+% the same on main on 3 November 2026 as in v1.3.1), with its links and the aside on the commit of its example glossary dropped: notes pages of their
+% own, outside the frame, so they follow slide 25's notes page and stay out of the audience PDF. A
+% note outside a frame does not get the theme's note style, so each one sets it first.
+\note{\parindent=0pt\parskip=1.1mm\raggedright\footnotesize
+  \textbf{Slide 25, continued (1 of 5): Pocock's README, ``Why These Skills Exist''}\par
+  I built these skills as a way to fix common failure modes I see with Claude Code, Codex, and other
+    coding agents.\par
+  \textbf{\#1: The Agent Didn't Do What I Want}\par
+  \emph{``No-one knows exactly what they want''}\enspace--- David Thomas \& Andrew Hunt, The Pragmatic
+    Programmer\par
+  \textbf{The Problem}. The most common failure mode in software development is misalignment. You think
+    the dev knows what you want. Then you see what they've built - and you realize it didn't understand
+    you at all.\par
+  This is just the same in the AI age. There is a communication gap between you and the agent. The fix
+    for this is a \textbf{grilling session} - getting the agent to ask you detailed questions about what
+    you're building.\par
+  \textbf{The Fix} is to use: \fn{/grill-me} - for non-code uses; \fn{/grill-with-docs} - same as
+    \fn{/grill-me}, but adds more goodies (see below).\par
+  These are my most popular skills. They help you align with the agent before you get started, and
+    think deeply about the change you're making. Use them \emph{every} time you want to make a
+    change.}
+\note{\parindent=0pt\parskip=1.1mm\raggedright\footnotesize
+  \textbf{Slide 25, continued (2 of 5)}\par
+  \textbf{\#2: The Agent Is Way Too Verbose}\par
+  \emph{``With a ubiquitous language, conversations among developers and expressions of the code are
+    all derived from the same domain model.''}\enspace--- Eric Evans, Domain-Driven-Design\par
+  \textbf{The Problem}: At the start of a project, devs and the people they're building the software
+    for (the domain experts) are usually speaking different languages.\par
+  I felt the same tension with my agents. Agents are usually dropped into a project and asked to figure
+    out the jargon as they go. So they use 20 words where 1 will do.\par
+  \textbf{The Fix} for this is a shared language. It's a document that helps agents decode the jargon
+    used in the project.\par
+  Example: here's an example glossary, from my \fn{course-video-manager} repo. Which one is easier to
+    read? \textbf{BEFORE}: ``There's a problem when a lesson inside a section of a course is made `real'
+    (i.e.\ given a spot in the file system)''. \textbf{AFTER}: ``There's a problem with the
+    materialization cascade''. This concision pays off session after session.}
+\note{\parindent=0pt\parskip=1.1mm\raggedright\footnotesize
+  \textbf{Slide 25, continued (3 of 5)}\par
+  \textbf{\#2, continued}\par
+  This is built into \fn{/grill-with-docs}. It's a grilling session, but that helps you build a shared
+    language with the AI, and document hard-to-explain decisions in ADR's.\par
+  It's hard to explain how powerful this is. It might be the single coolest technique in this repo.
+    Try it, and see.\par
+  Tip: a shared language has many other benefits than reducing verbosity: \textbf{variables, functions
+    and files are named consistently}, using the shared language; as a result, the \textbf{codebase is
+    easier to navigate} for the agent; the agent also \textbf{spends fewer tokens on thinking}, because
+    it has access to a more concise language.}
+\note{\parindent=0pt\parskip=1.1mm\raggedright\footnotesize
+  \textbf{Slide 25, continued (4 of 5)}\par
+  \textbf{\#3: The Code Doesn't Work}\par
+  \emph{``Always take small, deliberate steps. The rate of feedback is your speed limit. Never take on a
+    task that's too big.''}\enspace--- David Thomas \& Andrew Hunt, The Pragmatic Programmer\par
+  \textbf{The Problem}: Let's say that you and the agent are aligned on what to build. What happens when
+    the agent \emph{still} produces crap?\par
+  It's time to look at your feedback loops. Without feedback on how the code it produces actually runs,
+    the agent will be flying blind.\par
+  \textbf{The Fix}: You need the usual tranche of feedback loops: static types, browser access, and
+    automated tests.\par
+  For automated tests, a red-green-refactor loop is critical. This is where the agent writes a failing
+    test first, then fixes the test. This helps give the agent a consistent level of feedback that
+    results in far better code.\par
+  I've built a \textbf{\fn{/tdd} skill} you can slot into any project. It encourages red-green-refactor
+    and gives the agent plenty of guidance on what makes good and bad tests.\par
+  For debugging, I've also built a \textbf{\fn{/diagnosing-bugs}} skill that wraps best debugging
+    practices into a disciplined loop, gated phase by phase.}
+\note{\parindent=0pt\parskip=1.1mm\raggedright\footnotesize
+  \textbf{Slide 25, continued (5 of 5)}\par
+  \textbf{\#4: We Built A Ball Of Mud}\par
+  \emph{``Invest in the design of the system \emph{every day}.''}\enspace--- Kent Beck, Extreme Programming
+    Explained\par
+  \emph{``The best modules are deep. They allow a lot of functionality to be accessed through a simple
+    interface.''}\enspace--- John Ousterhout, A Philosophy Of Software Design\par
+  \textbf{The Problem}: Most apps built with agents are complex and hard to change. Because agents can
+    radically speed up coding, they also accelerate software entropy. Codebases get more complex at an
+    unprecedented rate.\par
+  \textbf{The Fix} for this is a radical new approach to AI-powered development: caring about the design
+    of the code.\par
+  This is built in to every layer of these skills: \fn{/to-spec} quizzes you about which modules you're
+    touching before creating a spec.\par
+  And crucially, \fn{/improve-codebase-architecture} surveys a codebase for deepening opportunities and
+    hands you the candidates. I recommend running it on your codebase once every few days. It is a
+    survey, not a rescue: on a genuinely old codebase it will find real candidates, but it won't
+    untangle the mud for you.\par
+  \textbf{Summary}: Software engineering fundamentals matter more than ever. These skills are my best
+    effort at condensing these fundamentals into repeatable practices, to help you ship the best apps of
+    your career. Enjoy.}
+
 % ------------------------------------------------------------ flow diagram
 \begin{frame}[source={Pocock (2026), mattpocock/skills v1.3.1 · aihero.dev/skills}]{Pocock's flow: who does what}
   \begin{tikzpicture}[x=1mm,y=1mm,
