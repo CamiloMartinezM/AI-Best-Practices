@@ -1,0 +1,93 @@
+% ------------------------------------------------------------------ title
+\begin{frame}[plain,noframenumbering]
+% Drawn inside the frame rather than over the page, so the speaker notes' thumbnail shows it too.
+% The picture's origin is the page's top-left corner: a plain frame's body starts 8 mm in and
+% 2 mm down. Coordinates in mm, y downwards negative; the blue panel bleeds 1 mm past the edges.
+\vbox to 0pt{\vskip-2mm\hbox to 0pt{\hskip-8mm\begin{tikzpicture}[x=1mm,y=1mm]
+  \useasboundingbox (0,0) rectangle (160,-90);
+  \coordinate (pnw) at (102,0);
+  \fill[udsblue] (102,1) rectangle (161,-91);
+  % a request typed at a prompt, and above it the editor where the agent changes the code: one
+  % line removed (red), two added (green), the second still being written at a sparkle; centred
+  % in the blue right of the red stripe
+  \begin{scope}[shift={(pnw)},xshift=0.8mm]
+    \fill[udsdark] (6,-15) rectangle (52,-60);
+    \fill[udsdark!70!black] (6,-15) rectangle (52,-19.5);
+    \foreach \i in {0,1,2} \fill[white!55!udsdark] (9+2.6*\i,-17.25) circle (0.65);
+    % the agent's edit: rows 3 (removed) and 4 and 5 (added), marked in the gutter
+    \fill[udsred!55!udsdark] (6,-31.4) rectangle (52,-34.6);
+    \fill[testgreen!60!udsdark] (6,-34.6) rectangle (52,-41);
+    \foreach \y/\m in {-33/$-$,-36.2/+,-39.4/+}
+      \node[text=white,font=\footnotesize\bfseries,inner sep=0pt] at (9.5,\y) {\m};
+    % code lines: row, indent level, segment widths; the first segment of a line is brighter
+    \foreach \row/\ind/\segs in {0/0/{8,15},1/1/{5,3,12},2/1/{4,14},3/1/{6,17},4/1/{6,9,8},
+        5/2/{8,7},6/2/{5,10},7/1/{11,6},8/1/{7,8},10/0/{9,5,11}} {
+      \pgfmathsetmacro\y{-22.8-3.2*\row}
+      \pgfmathsetmacro\x{13+3.5*\ind}
+      \xdef\xs{\x}
+      \foreach \w [count=\k] in \segs {
+        \pgfmathsetmacro\mix{\k==1 ? 85 : 50}
+        \fill[white!\mix!udsdark] (\xs,\y) rectangle ++(\w,-1.2);
+        \pgfmathsetmacro\nx{\xs+\w+1.4}
+        \xdef\xs{\nx}
+      }
+    }
+    % the sparkle pair right of the line being written (row 5 ends at x = 36.4, row 4 at 42.3)
+    \foreach \sx/\sy/\sr in {45.6/-39.2/2.5,47.6/-37.3/1.1}
+      \fill[white,shift={(\sx,\sy)},scale=\sr] (0,1) .. controls (0,0.28) and (0.28,0) .. (1,0)
+        .. controls (0.28,0) and (0,-0.28) .. (0,-1) .. controls (0,-0.28) and (-0.28,0) .. (-1,0)
+        .. controls (-0.28,0) and (0,0.28) .. cycle;
+    % the prompt: a chevron and three words, the first word in line with the code
+    \draw[white,line width=0.9pt,rounded corners=3.5mm] (6,-64.5) rectangle (52,-71.5);
+    \draw[udsred!45!white,line width=1.2pt] (8.9,-66.6) -- (10.5,-68) -- (8.9,-69.4);
+    \foreach \x/\w in {13/9,23.4/4,28.8/12} \fill[white!85!udsblue] (\x,-67.4) rectangle ++(\w,-1.2);
+  \end{scope}
+  \fill[udsred] (102,1) rectangle (103.6,-91);
+  \node[anchor=north west,inner sep=0pt] at (8,-8) {\includegraphics[width=30mm]{\udslogo}};
+  \node[anchor=north west,inner sep=0pt,text width=88mm,align=left] at (8,-36) {%
+    {\fontsize{25}{29}\selectfont\bfseries\color{udsblue}\inserttitle\par}\vskip2mm
+    {\fontsize{15}{18}\selectfont\color{udsdark}\insertsubtitle\par}\vskip4mm
+    \textcolor{udsred}{\rule{14mm}{0.8pt}}\par\vskip3mm
+    {\fontsize{11}{13}\selectfont\color{udsdark}\insertauthor\par}};
+  \node[anchor=south west,inner sep=0pt] (d3m) at (8,-83) {\includegraphics[width=10mm]{assets/d3m.png}};
+  \node[anchor=west,inner sep=0pt,text width=74mm,align=left,font=\fontsize{7}{8.8}\selectfont,
+    execute at begin node={\hyphenpenalty=10000}] at ([xshift=3mm]d3m.east) {%
+    {\color{udsblue}\insertinstitute\par}
+    {\color{udsgrey}\insertdate\par}};
+\end{tikzpicture}\hss}\vss}
+% a frame with no tall content drops out of the notes' thumbnail; this invisible strut keeps it
+\par\rule{0pt}{80mm}
+\note{\textbf{0:00--0:20}\par
+    Practical talk: how we prepare a repository for coding agents, how we hand over a task, and
+      how we check the result.}
+\end{frame}
+
+% --------------------------------------------------------------- overview
+\begin{frame}{One task, nine questions}
+  \small\renewcommand\arraystretch{1.32}\setlength\tabcolsep{4pt}
+  \begin{tabularx}{\textwidth}{@{}>{\leavevmode\color{udsblue}\bfseries}p{4mm}>{\bfseries}p{26mm}X>{\leavevmode\color{udsgrey}\footnotesize}L{44mm}@{}}
+    \toprule
+    1 & Delegation      & What do we provide and what do we check?     & splitting data by specimen\\
+    2 & Version control & How do we keep and review every change?      & git, GitHub, worktrees\\
+    3 & Environment     & What runs the code, and what checks it?      & conda, uv, Ruff, mypy, Pylance\\
+    4 & Repository      & What can the repository tell the agent?      & \fn{AGENTS.md}, \fn{GLOSSARY.md}\\
+    5 & Decisions       & Why does the project work this way?          & ADR-0003\\
+    6 & Workflow        & How does a request become reviewed code?     & skills, Pocock's workflow\\
+    7 & Tests first     & How do tests keep an agent on track?         & \fn{/implement} and \fn{/tdd}\\
+    8 & Verification    & What counts as done, and who decides?        & tests versus scientific validity\\
+    9 & Adoption        & What do I change in my repository first?     & other skill packages, a checklist\\
+    \bottomrule
+  \end{tabularx}
+  \note{\textbf{0:20--1:00}\par
+    One running task carries the talk: splitting a segmentation dataset by specimen.\par
+    The nine sections answer nine practical questions.\par
+    Sections 2 and 3 are the groundwork that an agent needs in any project: version control and
+      an environment with automatic checks.\par
+    A thread runs from the first section to the fifth: the better the repository is prepared,
+      the shorter the request can be.\par
+    The repository and its code are illustrative; the micrographs come from our HCCI SEM
+      dataset.\par
+    Codex and Matt Pocock's skills are the documented examples; the research-code examples are
+      ours.\par
+    Tool behaviour changes quickly; the appendix lists versions and access dates.}
+\end{frame}

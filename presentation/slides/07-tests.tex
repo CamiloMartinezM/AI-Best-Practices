@@ -1,0 +1,189 @@
+\section[Tests first]{Tests first}
+\sectionframe{07}{Tests first}
+  {How does a test written before the code keep an agent on track?}
+  {\faCheckDouble}
+
+% ---------------------------------------------------------------- the loop
+\begin{frame}[source={Beck (2002), Test-Driven Development: By Example}]{Test-driven development: red, green, refactor}
+  \begin{tikzpicture}[x=1mm,y=1mm,
+      phase/.style={box,text width=28mm,minimum height=13mm,font=\footnotesize,line width=0.8pt},
+      gain/.style={inner sep=0pt,font=\footnotesize,text=udsdark,align=left},
+      tick/.style={inner sep=0pt,font=\footnotesize,anchor=base east}]
+    \useasboundingbox (0,-1.36) rectangle (144,-55);
+    \node[phase,draw=udsred,fill=redtint] (red) at (72,-8)
+      {{\color{udsred}\bfseries\small RED}\\[0.4mm] write a failing test for one behaviour};
+    \node[phase,draw=testgreen,fill=greentint] (green) at (96,-40)
+      {{\color{testgreen}\bfseries\small GREEN}\\[0.4mm] write just enough code to pass it};
+    \node[phase,draw=udsblue,fill=bluetint] (ref) at (48,-40)
+      {{\color{udsblue}\bfseries\small REFACTOR}\\[0.4mm] tidy the code; every test stays green};
+    \draw[flow] (red.east) to[bend left=35] (green.north);
+    \draw[flow] (green.west) -- (ref.east);
+    \draw[flow] (ref.north) to[bend left=35] (red.west);
+    \node[lbl,align=center] at (72,-27) {one behaviour\\per cycle};
+    % what each step gives us; each tick sits on its gain's first baseline (with a text width,
+    % a node's base is its first line)
+    \node[gain,anchor=west] (g1) at (95,-5.2) {the requirement, written first};
+    \node[gain,anchor=west] (g2) at (95,-10.8) {proof that the test can fail};
+    \node[gain,anchor=west,text width=20mm] (g3) at (118.4,-40) {small steps,\\easy to review};
+    \node[gain,anchor=west,text width=22mm] (g4) at (8,-40) {a regression net\\for later changes};
+    \foreach \g/\c in {g1/udsred,g2/udsred,g3/testgreen,g4/udsblue}
+      \node[tick,text=\c] at ([xshift=-1.4mm]\g.base west) {\faCheck};
+    \node[gain,anchor=base] (g5) at (74,-53.4) {tests call clear interfaces: the seams};
+    \node[tick,text=udsdark] at ([xshift=-1.4mm]g5.base west) {\faCheck};
+  \end{tikzpicture}
+  \note{\textbf{33:40--34:40}\par
+    Test-driven development in Kent Beck's formulation is a short loop.\par
+    Red: write a test for one behaviour and watch it fail.\par
+    Green: write just enough code to make it pass.\par
+    Refactor: tidy the code while all tests stay green.\par
+    Then the next behaviour.\par
+    What we get: the requirement written down as a test before the code exists, proof that each
+      test can fail, small steps, a regression net, and pressure towards clear interfaces, the
+      seams where tests observe behaviour.}
+\end{frame}
+
+% ------------------------------------------------------- why for an agent
+\begin{frame}[source={Anthropic (2026), Claude Code best practices · Mathews \& Nagappan (2024), ASE ’24}]{Why tests first help an agent}
+  \begin{tikzpicture}[x=1mm,y=1mm,
+      node2/.style={box,minimum height=9mm,inner sep=1.6mm},
+      item/.style={anchor=base west,inner sep=0pt,font=\footnotesize,text=udsdark},
+      head/.style={anchor=base west,inner sep=0pt,font=\footnotesize\bfseries}]
+    \useasboundingbox (0,0) rectangle (144,-54);
+    % the agent edits the code and runs the tests
+    \node[node2,artifact,font=\ttfamily\footnotesize\bfseries,minimum width=20mm] (src) at (12,-8) {src/};
+    \node[node2,agent,font=\footnotesize\bfseries,minimum width=26mm] (ag) at (62,-8) {\faRobot\enspace agent};
+    \node[node2,artifact,draw=testgreen,fill=greentint,font=\ttfamily\footnotesize\bfseries,minimum width=20mm]
+      (tst) at (114,-8) {tests/};
+    \draw[flow] (ag.west) -- node[lbl,above] {edits} (src.east);
+    \draw[flow] (ag.east) -- node[lbl,above] {runs} (tst.west);
+    \node[anchor=south,inner sep=0pt,font=\scriptsize,text=testgreen] at ([yshift=1mm]tst.north)
+      {\faLock\enspace approved and committed first};
+    % pass or fail comes back: the signal
+    \draw[flow,draw=testgreen,line width=0.8pt] (tst.south) to[out=-90,in=-90,looseness=0.55]
+      node[pos=0.5,below,inner sep=0.8mm,font=\scriptsize\bfseries,text=testgreen] {pass or fail} (ag.south);
+    % what the signal gives the agent
+    \node[head,text=testgreen] at (0,-28.4) {what it gives the agent};
+    \foreach \t [count=\i] in {a check it runs itself,{the intent, fixed first},one small goal per cycle,
+        earlier decisions still enforced}
+      \node[item] at (0,-28.4-\i*4.7) {\textcolor{testgreen}{\faCheck}\enspace\t};
+    % how it gets gamed: aimed at the tests, and what catches it
+    \node[head,text=udsred] (gamed) at (70,-28.4) {how it gets gamed};
+    \foreach \t [count=\i] in {tests edited or skipped,expected values copied from the code,
+        a mock that replaces the logic,tests fitted after the code}
+      \node[item] at (70,-28.4-\i*4.7) {\textcolor{udsred}{\faTimes}\enspace\t};
+    \draw[udsred,line width=0.6pt,dashed,-{Stealth[length=1.7mm,width=1.3mm]}]
+      ([xshift=1.5mm]gamed.east) to[out=0,in=-90] (121,-12.6);
+    \node[item,text=udsblue] at (70,-53)
+      {caught by: test diffs reviewed first · CI runs every test};
+  \end{tikzpicture}
+  \note{\textbf{34:40--35:40}\par
+    Anthropic's guidance for Claude Code puts it plainly: without a check it can run, an agent
+      stops when the work looks done.\par
+    A failing test turns done into a signal the agent reads and iterates on.\par
+    Written first, from the spec, the test records intent instead of mirroring the
+      implementation, and the suite keeps earlier decisions enforced in later sessions.\par
+    The failure modes are real: agents weaken, skip or edit tests, recompute expected values the
+      way the code does, or replace the logic under test with a mock, a stand-in that returns
+      whatever the test expects.\par
+    Hence our guardrails.\par
+    A benchmark study found that giving the model the tests with the task solved more problems;
+      that is evidence for code generation, not for research code.}
+\end{frame}
+
+% ------------------------------------------------- /implement drives /tdd
+\begin{frame}[source={Pocock (2026), mattpocock/skills v1.3.1: implement, tdd · aihero.dev/skills}]{How \texttt{/implement} uses \texttt{/tdd}}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{tikzpicture}[x=1mm,y=1mm,
+          stp/.style={agent,text width=48mm,minimum height=6.6mm,align=left,font=\scriptsize,inner sep=1mm},
+          num/.style={font=\scriptsize\bfseries,text=udsblue,anchor=east,inner sep=0.8mm}]
+        \node[anchor=north west,inner sep=0pt,font=\footnotesize] at (0,0)
+          {\fn{/implement}: one ticket, one fresh session};
+        \node[stp,anchor=north west] (s1) at (6,-5)  {read the ticket};
+        \node[stp,anchor=north west,draw=testgreen,fill=greentint,line width=0.8pt,minimum height=9mm] (s2) at (6,-14)
+          {\fn{/tdd} at the agreed seams: one failing test, then just enough code to pass it};
+        \node[stp,anchor=north west] (s3) at (6,-26) {typecheck; run single test files};
+        \node[stp,anchor=north west] (s4) at (6,-35) {run the full suite once};
+        \node[stp,anchor=north west] (s5) at (6,-44) {\fn{/code-review}, then commit};
+        \foreach \i in {1,...,5} \node[num] at (s\i.west) {\i};
+        \foreach \i [evaluate=\i as \j using int(\i+1)] in {1,...,4} \draw[flow] (s\i.south) -- (s\j.north);
+        \draw[flow,draw=testgreen] ([yshift=-2.2mm]s2.east) -- ++(3.5,0) -- ++(0,4.4)
+          node[midway,right,lbl,text=testgreen] {repeat} -- ++(-3.5,0);
+      \end{tikzpicture}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \begin{gblock}[fontupper=\footnotesize]{Rules of the \texttt{/tdd} loop}
+        \begin{itemize}\setlength\itemsep{0.5mm}
+          \item seams agreed with you first
+          \item one failing test, then minimal code
+          \item one vertical slice per cycle
+          \item tests only through public interfaces
+          \item mocks only at system boundaries
+          \item refactoring left to \fn{/code-review}
+        \end{itemize}
+      \end{gblock}
+      {\footnotesize Known gaps: code written before its test; ticket left open; the run reviews its own
+       work.\par}
+    \end{column}
+  \end{columns}
+  \note{\textbf{35:40--36:50}\par
+    In Pocock's skills, implement is the build step and you invoke it yourself, one ticket per
+      fresh session.\par
+    It reads the ticket, drives the tdd skill at the agreed seams one red-green slice at a time,
+      typechecks and runs single test files as it goes, runs the full suite once at the end,
+      calls code-review and commits.\par
+    The tdd skill is a set of rules: seams agreed first, red before green, one vertical slice
+      per cycle, tests through public interfaces, mocks only at system boundaries.\par
+    The loop has no refactor step, because agents almost never do it; code-review
+      proposes refactoring instead.\par
+    The author's documentation lists the gaps: the agent sometimes writes code first, implement
+      does not close the ticket, and the review inside the same run reviews its own work, so a
+      fresh session makes a better reviewer.}
+\end{frame}
+
+% ------------------------------------------------------- running example
+\begin{frame}[fragile]{Red and green on the specimen split}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.57\textwidth}
+      % the tints run unbroken into the rules, and stop at the table's right edge
+      \footnotesize\renewcommand\arraystretch{1.3}\setlength\tabcolsep{2.5pt}
+      \setlength\aboverulesep{0pt}\setlength\belowrulesep{0pt}\setlength\extrarowheight{0.6pt}
+      \begin{tabularx}{\linewidth}{@{}>{\leavevmode\bfseries\color{udsblue}}p{2.5mm}L{29mm}>{\columncolor{redtint}}L{22mm}>{\columncolor{greentint}[\tabcolsep][0pt]}X@{}}
+        \toprule
+        & \bfseries Test: the behaviour & \textbf{\textcolor{udsred}{Red: failure}} &
+          \textbf{\textcolor{testgreen}{Green: fix}}\\
+        \midrule
+        1 & each specimen lands in exactly one fold & function does not exist & one fold per specimen ID\\
+        2 & folds do not depend on row order & folds follow the row order & sort IDs, shuffle with the seed\\
+        3 & missing \fn{specimen\_id} raises \fn{ValueError} & pandas raises \fn{KeyError} & check the columns first\\
+        4 & too few specimens raise \fn{ValueError} & empty folds pass silently & check the count\\
+        \bottomrule
+      \end{tabularx}
+    \end{column}
+    \begin{column}{0.4\textwidth}
+\begin{terminal}[basicstyle=\ttfamily\fontsize{7}{8.5}\selectfont]{terminal, cycle 1}
+$ pytest tests/data -q
+E   ImportError: cannot import name
+    'specimen_folds'
+ERROR tests/data/test_splitting.py
+§\textcolor{termred}{1 error}§
+
+# write the smallest specimen_folds()
+$ pytest tests/data -q
+.
+§\textcolor{termgreen}{1 passed}§
+\end{terminal}
+    \end{column}
+  \end{columns}
+  \note{\textbf{36:50--38:00}\par
+    Ticket T1 under the tdd loop.\par
+    Cycle one: the test says every specimen lands in exactly one fold; it fails because the
+      function does not exist; the smallest change assigns one fold per specimen ID.\par
+    Cycle two: shuffling the manifest rows must not change the folds; the first version follows
+      the row order, so this fails; sorting the IDs and shuffling them with the seed fixes
+      it.\par
+    Cycles three and four pin down the error cases, as the coding standards ask.\par
+    The seams come from the spec, and the expected values come from a small hand-written fixture
+      rather than from recomputing what the code does.\par
+    The terminal output is abridged.}
+\end{frame}

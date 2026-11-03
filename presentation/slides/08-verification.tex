@@ -1,0 +1,169 @@
+\section[Verification]{Safeguards and scientific verification}
+\sectionframe{08}{Safeguards and scientific verification}
+  {What may never happen along the way, and what counts as done?}
+  {\faIcon{shield-alt}}
+
+% -------------------------------------------------------------- safeguards
+% \mdcode{text}: code in backticks, as a rule is written in a Markdown file
+\newcommand\mdcode[1]{\textasciigrave#1\textasciigrave}
+\begin{frame}[source={OpenAI (2026), Codex sandboxing; Agent approvals and security · OpenAI (2026), Running Codex safely at OpenAI}]{Written rules versus enforced controls}
+  \begin{tikzpicture}[x=1mm,y=1mm,
+      head/.style={anchor=north west,inner sep=0pt,text height=2.3mm,text depth=0.7mm,
+        font=\footnotesize,text=udsdark},
+      % code in nodes: a space as wide as a character, as in the code boxes
+      rule/.style={anchor=west,inner sep=0pt,text width=66mm,align=left,
+        font=\ttfamily\fontsize{8}{9.6}\selectfont,text=udsdark,
+        execute at begin node={\setbox0\hbox{x}\spaceskip=\wd0\relax}},
+      ctl/.style={anchor=west,draw=udsblue,fill=bluetint,line width=0.5pt,rounded corners=1mm,
+        minimum width=59.5mm,text width=55.5mm,inner xsep=2mm,inner ysep=1.4mm,align=left,
+        font=\footnotesize,text=udsdark}]
+    % the boxes reach the text width exactly; strokes there must not widen the picture
+    \useasboundingbox (0,0) rectangle (144,-49.2);
+    % column heads: what we write, and what holds even if the agent ignores it
+    \node[head] at (0,0) {\textbf{Written rule}\enspace\textcolor{udsgrey}{a request}};
+    \node[head] at (84,0) {\textbf{\color{udsblue}Enforced control}\enspace\textcolor{udsgrey}{holds anyway}};
+    % the rules as AGENTS.md states them, in a file window: tab, grey bar, white page
+    \node[anchor=north west,inner xsep=1.8mm,inner ysep=0.8mm,text height=1.9mm,text depth=0.6mm,
+      font=\ttfamily\fontsize{7}{8}\selectfont,text=udsdark] (tab) at (0,-4.6)
+      {\textcolor{udsblue}{\faIcon[regular]{file-alt}}\enspace AGENTS.md};
+    \begin{scope}
+      \clip[rounded corners=1.2mm] (0,-4.6) rectangle (72,-49.2);
+      \fill[darktint] (tab.north east) rectangle (72,-8.7);
+      \draw[udsblue,line width=0.9pt] (tab.north west) -- (tab.north east);
+    \end{scope}
+    \draw[udsgreylight,line width=0.5pt,rounded corners=1.2mm] (0,-4.6) rectangle (72,-49.2);
+    % each rule, backed by the control that enforces it outside the model
+    \foreach \i/\r/\c in {
+        0/{- Never open or commit \mdcode{data/partner/}}/{not reachable from the agent's machine},
+        1/{- Never print or commit secrets}/{no tokens in the repository or the session},
+        2/{- Never write to \mdcode{data/raw/}}/{raw data read-only by file permissions},
+        3/{- No cluster or GPU jobs}/{no cluster credentials in the session}} {
+      \pgfmathsetmacro\y{-14.2-\i*10}
+      \node[rule] at (3,\y) {\r};
+      \draw[flow] (73.4,\y) -- (82.7,\y);
+      \node[ctl] at (84,\y) {\textcolor{udsblue}{\faLock}\enspace\c};
+    }
+  \end{tikzpicture}
+  \note{\textbf{38:10--39:30}\par
+    Section 4 wrote the boundaries into AGENTS.md; this is what enforces them.\par
+    Each rule is backed by a control that holds even if the agent ignores the rule.\par
+    Written rules are prompt text: useful, but a confused or manipulated agent can ignore them,
+      for instance after a prompt injection: instructions hidden in a web page or file that the
+      agent reads and follows as if they came from us.\par
+    Controls are enforced outside the model: where the data lives, which credentials exist in
+      the session, file permissions, the sandbox mode, network access, approvals, and a
+      protected main branch, which accepts changes only through a reviewed pull request.\par
+    In Codex the default local mode is workspace-write with the network off; it limits where the
+      agent writes and keeps Git metadata read-only, but it still lets the agent write to
+      data/raw inside the repository and read files outside it.\par
+    So raw data needs its own read-only permissions, and confidential data must not be reachable
+      at all.\par
+    Which services are approved for which data is a local rule we have to check.}
+\end{frame}
+
+% ------------------------------------------------------------ verification
+\begin{frame}[fragile]{Verifying the running example}
+\begin{codefile}[style=py,basicstyle=\ttfamily\fontsize{7.2}{8.75}\selectfont]{tests/data/test\_splitting.py}
+def test_one_fold_per_specimen(manifest):                 # fixture: 3 specimens, 2 areas each
+    folds = specimen_folds(manifest, n_folds=3, seed=0)   # one fold label per patch
+    assert folds.groupby(manifest["specimen_id"]).nunique().eq(1).all()
+    assert folds.nunique() == 3                           # each specimen held out once
+\end{codefile}
+  \vskip1.5mm
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.66\textwidth}
+\begin{terminal}[basicstyle=\ttfamily\fontsize{7}{8.4}\selectfont]{before merging}
+$ git diff --stat main...HEAD   # split module, tests, CLI
+$ pytest tests/data -q          # all pass
+$ python -m sem_seg.data.check_folds \
+      folds/specimen-seed0.json # one fold per specimen
+$ sha256sum -c checksums/raw-data.sha256   # every file OK
+\end{terminal}
+    \end{column}
+    \begin{column}{0.31\textwidth}
+\begin{codefile}[style=sh,basicstyle=\ttfamily\fontsize{7}{8.4}\selectfont]{folds/specimen-seed0.json}
+{
+  "seed": 0,
+  "commit": "...",
+  "manifest_sha256": "...",
+  "config": {...}
+}
+\end{codefile}
+    \end{column}
+  \end{columns}
+  \note{\textbf{39:30--40:30}\par
+    What verification means for this task.\par
+    The key test is small: on a synthetic manifest, every specimen must land in exactly one
+      fold, so no held-out fold shares material with training.\par
+    Then five checks that a person can run in a few minutes: confirm the scope of the change and
+      read the diff itself; run the fast tests; run the fold check on the real manifest; confirm
+      that raw data is byte-identical against a committed checksum list kept outside the raw
+      folder, with sha256sum from Git Bash; and confirm that the fold file records seed, commit,
+      manifest hash and configuration, so the experiment can be reproduced and audited.}
+\end{frame}
+
+% ------------------------------------------------------------ three levels
+% left: a ladder of three claims, each checked by someone else; right: what a specimen fold holds
+% out on the HCCI data, one specimen per material state
+\begin{frame}{Runs, passes the tests, is valid}
+  \begin{tikzpicture}[x=1mm,y=1mm,
+      claim/.style={anchor=north west,minimum height=6.6mm,text width=37mm,inner xsep=1.8mm,
+        inner ysep=0pt,font=\footnotesize\bfseries,text=white,align=left},
+      who/.style={anchor=north west,inner sep=0pt,font=\scriptsize,text=udsdark,align=left,
+        text width=44mm,execute at begin node={\hyphenpenalty=10000}},
+      gap/.style={anchor=north west,inner sep=0pt,font=\scriptsize\itshape,text=udsgrey},
+      riser/.style={udsgreylight,line width=0.6pt},
+      state/.style={anchor=south,inner sep=0pt,font=\ttfamily\fontsize{7}{8}\selectfont,text=udsdark},
+      fold/.style={anchor=east,inner sep=0pt,font=\scriptsize,text=udsdark}]
+    % the ladder: who checks each claim, and between two steps what the lower claim cannot show
+    \node[claim,fill=udsred] (c3) at (12,0) {3\enspace Scientifically valid};
+    \node[who] at ([yshift=-1.3mm]c3.south west) {\textcolor{udsred}{\faUser}\enspace people who know the material and the study};
+    \node[gap] at (12,-15.6) {passes $\neq$ the right question};
+    \node[claim,fill=udsblue] (c2) at (6,-20.4) {2\enspace Passes its tests};
+    \node[who] at ([yshift=-1.3mm]c2.south west) {\textcolor{udsblue}{\faRobot}\enspace pytest, code review, an AI reviewer};
+    \node[gap] at (6,-36) {runs $\neq$ the right folds};
+    \node[claim,fill=udsgreymid] (c1) at (0,-40.8) {1\enspace Runs};
+    \node[who] at ([yshift=-1.3mm]c1.south west) {\textcolor{udsgrey}{\faCogs}\enspace CI, the agent itself};
+    \draw[riser] (3,-40.8) |- (c2.west);
+    \draw[riser] (9,-20.4) |- (c3.west);
+    % the example: specimen folds on the HCCI data; the fold numbers are those of slide 3
+    \fill[redtint] (60,0) rectangle (144,-55.2);
+    \draw[udsred,line width=0.6pt] (c3.east) -- (60,0 |- c3.east);
+    \foreach \s [count=\j from 0] in {AsCast,Q980\_0h\_WC,Q980\_9h\_AC}
+      \node[state] at (85.5+\j*20,-4.6) {\s};
+    \foreach \i in {0,1,2} {
+      \node[fold] at (74,-11.9-\i*13.2) {fold \the\numexpr\i+1\relax};
+      \foreach \f [count=\j from 0] in {spec-ascast,spec-q980-0h,spec-q980-9h} {
+        \node[anchor=north west,inner sep=0pt] (t) at (76+\j*20,-6-\i*13.2)
+          {\includegraphics[width=19mm]{assets/hcci/\f}};
+        \ifnum\i=\j
+          \draw[udsred,line width=1.2pt] (t.north west) rectangle (t.south east);
+          \node[anchor=south west,fill=udsred,text=white,font=\fontsize{7}{8}\selectfont\bfseries,
+            inner xsep=0.9mm,inner ysep=0.5mm] at (t.south west) {held out};
+        \else
+          \fill[white,opacity=0.62] (t.north west) rectangle (t.south east);
+        \fi
+      }
+    }
+    \node[anchor=north west,inner sep=0pt,font=\scriptsize,text=udsdark,text width=79mm] at (63,-45.6)
+      {one specimen per state: every held-out specimen is a new state};
+    % phase classes that occur in one state only (dataset README, section 4)
+    \node[anchor=north west,inner sep=0pt,font=\scriptsize,text=udsred,text width=79mm,
+      execute at begin node={\hyphenpenalty=10000}] at (63,-49.2)
+      {unseen in training: austenite, fresh martensite (fold 1); retained austenite (fold 2)};
+  \end{tikzpicture}
+  \note{\textbf{40:30--41:40}\par
+    Three different claims.\par
+    The software runs: the command finishes.\par
+    It passes the specified tests: no overlap, deterministic, complete.\par
+    Neither says whether the evaluation is scientifically meaningful.\par
+    That depends on the claim: generalisation to a new specimen, to a new material state or to a
+      new microscope are different experiments.\par
+    In our HCCI dataset there is one specimen per state, so a specimen split is also a state
+      split.\par
+    In two of the three folds the held-out state even has phase classes that training never
+      shows: austenite and fresh martensite occur only in the as-cast state, retained austenite
+      only in the water-cooled one.\par
+    An agent cannot be relied on to raise this, and neither can a second AI reviewer checking
+      the code.}
+\end{frame}

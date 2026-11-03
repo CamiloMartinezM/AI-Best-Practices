@@ -1,0 +1,45 @@
+# Coding Agents 101: Workflows & Best Practices
+
+A LaTeX Beamer talk on delegating research-code tasks to coding agents. It covers what a request needs; the groundwork every agent needs (version control with git, worktrees for parallel agents, an environment with conda or uv, and automatic checks with Ruff, mypy and Pylance); how a prepared repository (`AGENTS.md`, `GLOSSARY.md`, `CODING_STANDARDS.md`, ADRs) lets the request stay short; skills, from the idea to Matt Pocock's collection, the classic books it draws on and an example `/grill-with-docs` session; working test-first; verifying the results; and other skill packages that also set the check before the code. One running example carries the talk: splitting a segmentation dataset by specimen. An appendix holds templates, tool details and references.
+
+## Start here
+
+- [Audience PDF](presentation/build/main.pdf): 62 pages, 50 for the 49 talk slides (slide 5 builds up in two steps) and 12 appendix pages.
+- [Speaker notes](presentation/build/speaker-notes.pdf): 42 pages, one per talk slide (dividers excluded) with the slide image, notes and timing, and one for each of the two backup slides on uv in the appendix (A4, A5).
+- [Timed outline](OUTLINE.md) and [sources and provenance](SOURCES.md).
+
+## Files
+
+| Path | Content |
+|---|---|
+| `presentation/main.tex` | Entry point: title, presenter, date, section files |
+| `presentation/beamerthemed3m.sty` | Theme: UdS colours, fonts, mini-frame headline, footer, blocks, code boxes |
+| `presentation/slides/*.tex` | One file per section; `10-appendix.tex` holds the appendix |
+| `presentation/assets/` | UdS logo (vector), d3M logo, HCCI micrographs with `provenance.csv`, screenshots in `screens/` |
+| `presentation/tools/prepare_hcci_images.py` | Re-creates the HCCI micrographs, cropped or full frame, and the mask from the dataset |
+| `presentation/build.ps1` | Build script (XeLaTeX, three passes) |
+
+## Build
+
+From the `presentation` folder in PowerShell:
+
+```powershell
+.\build.ps1
+.\build.ps1 speaker-notes
+```
+
+Requirements: XeLaTeX (tested with MiKTeX) with beamer, TikZ, tcolorbox, listings and fontawesome5. Text is set in Latin Modern Sans, the OpenType version of Computer Modern Sans that ships with TeX. Code uses [FiraCode Nerd Font Mono](https://www.nerdfonts.com/font-downloads), which must be installed on the system; without it the theme falls back to Latin Modern Mono. Three passes are needed because the title page and section dividers place their graphics relative to the page. On Overleaf, select XeLaTeX and upload the FiraCode Nerd Font files, or rely on the fallback; the included `.latexmkrc` lets latexmk repeat passes as needed.
+
+## Editing
+
+- Title, presenter and date: `\title{}`, `\subtitle{}`, `\author{}` and `\date{}` in `main.tex`, with the PDF's own title and author in its `\hypersetup`. The title slide shows the presenter under the subtitle and the date at the bottom.
+- Citations: the frame option `source={...}` prints a short citation in the footer, for example `source={Beck (2002), Test-Driven Development: By Example}`. Full references go on slides A9 to A12.
+- Section dividers: `\sectionframe{number}{title}{question}{icon}`, where the icon is a fontawesome5 command such as `\faCodeBranch` or `\faIcon{shield-alt}`.
+- Boxes: `dblock` (blue, information), `ablock` (red, decisions and warnings), `fblock` (dark, files), `gblock` (green, passing tests), `panel` (untitled), `codefile` (a file's contents, shown as in an editor: a tab with an icon and the path, such as `docs/adr/0003-specimen-level-splits.md`, above a white page; Markdown by default, `[style=sh]` greys `#` comments for shell, TOML, YAML and `.gitignore`, `[style=py]` for Python), `terminal` (commands shown in a terminal window: dark, three dots and a centred title; `$` prompts green, `#` comments grey, `§\textcolor{termred}{...}§` or `termgreen` for output), `terminalwindow` (the same frame around a terminal screenshot), `foldertree` (a folder structure on a white page with the file window's border: `\tdir{depth}{name}{note}` and `\tfile{depth}{name}{note}` rows with blue folder and grey file icons, guides drawn to each parent, notes at `note at=`; `\tbadge{style}{text}` adds a badge at `badge at=`, `\tstrike` strikes a name).
+- Task specification cards, inside a `tikzpicture[x=1mm,y=1mm]` (slides 4, 5 and 21): `\specterminal{y top}{title}` draws the request as a terminal across the text width, set in `[spec request]` nodes; `\speccard{k}{y top}{y bottom}{label}{body fill}` draws card `k` (0 to 4) of objective, context, constraints, acceptance and verification at fixed positions; `\specfilecard` gives the card a dark head and a file icon, for a part that comes from files; `spec chip`, `spec skill` and `spec note` fill a card with file names, skills and notes.
+- Tables: booktabs rules; `>{\columncolor{redtint}}` tints a column (colortbl), as on slide 33, where `\aboverulesep` and `\belowrulesep` are 0pt so the tint meets the rules.
+- Colour carries meaning in the diagrams (blue: agent or tool, red: person, decision or held-out data, dark: files and the parts of a task that come from files, green: passing tests), and every element also has a text label.
+- Screenshots: `SOURCES.md` describes how each one in `presentation/assets/screens/` was made, so it can be retaken.
+- Speaker notes: `\note{\textbf{12:50--13:50}\par First point.\par Second point.}`, the time range first, then one sentence per line, so the notes pages work as cues. A backup slide in the appendix starts its note with `\textbf{If asked}` instead of a time range, so it adds nothing to the talk's length. A slide that builds up in steps, such as slide 5 with `\only<2->{...}`, attaches its note to the last step, `\note<2>{...}`, so the notes show it once, with the whole slide. The title slide is drawn inside its frame, not over the page, so that its notes page shows it too.
+- Text size: anything the audience must read, code included, is at least 7 pt. Screenshots stay smaller, so their caption or a numbered marker carries the message. A term the audience may not know (CI, pull request, mock, seam) is explained in the speaker notes where it first appears.
+- Spacing: the theme starts every slide's content 4 mm below the title, whether it begins with text, a list, a block, a table or an image, and in `[T]` columns both columns start on the same line. Do not add `\vspace` at the start of a frame or use the `[c]` frame option; a tcolorbox raster needs `raster before skip=0pt`.

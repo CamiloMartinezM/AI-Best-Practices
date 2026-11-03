@@ -1,0 +1,38 @@
+% !TeX program = xelatex
+% Coding Agents 101: Workflows & Best Practices
+% Build: see ../README.md (XeLaTeX, three passes).
+\documentclass[aspectratio=169,10pt,t,compress,usepdftitle=false]{beamer}% pdftitle and pdfauthor below
+\usetheme{d3m}
+
+\title[d3M]{Coding Agents 101}
+\subtitle{Workflows \& Best Practices}
+\author{Camilo Martínez}% presenter, shown on the title slide under the subtitle
+\institute{\textbf{d3M -- Data-Driven Design of Materials}\\
+  Chair of Experimental Methods in Materials Science\\ Universität des Saarlandes}
+\date{Research group talk, October 2026}
+
+\hypersetup{pdftitle={Coding Agents 101: Workflows \& Best Practices},
+  pdfsubject={Version control, environments, repository context, workflows and verification for coding agents},
+  pdfauthor={Camilo Martínez},colorlinks=true,linkcolor=udsblue,urlcolor=udsblue}
+
+% Audience PDF hides notes; speaker-notes.tex sets \notesmode before \input{main}.
+\providecommand\notesmode{hide notes}
+\setbeameroption{\notesmode}
+
+\begin{document}
+\input{slides/00-title}
+\input{slides/01-delegation}
+\input{slides/02-version-control}
+\input{slides/03-environment}
+\input{slides/04-repository}
+\input{slides/05-decisions}
+\input{slides/06-workflow}
+\input{slides/07-tests}
+\input{slides/08-verification}
+\input{slides/09-adoption}
+\appendix
+% the footer numbers appendix slides A1, A2, ..., as their titles do
+\setcounter{framenumber}{0}
+\renewcommand\insertframenumber{A\arabic{framenumber}}
+\input{slides/10-appendix}
+\end{document}

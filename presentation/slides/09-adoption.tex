@@ -1,0 +1,125 @@
+\section[Adoption]{A realistic starting point}
+\sectionframe{09}{A realistic starting point}
+  {What should I change in my repository first?}
+  {\faSeedling}
+
+% ---------------------------------------------------- other skill packages
+% \pkgcard{k}{owner}{repository}{head colour}{author}{what it is}{its steps}{its rule for tests}: card k
+% (0 to 3), 33.6 mm wide; the green box at its foot holds the rule, level with the other cards' rules
+\newcommand\pkgcard[8]{%
+  \pgfmathsetmacro\pkx{#1*36.8}%
+  \begin{scope}
+    \clip[rounded corners=1.2mm] (\pkx,0) rectangle ++(33.6,-45.4);
+    \fill[white] (\pkx,0) rectangle ++(33.6,-45.4);
+    \fill[#4] (\pkx,0) rectangle ++(33.6,-9.2);
+    \fill[greentint] (\pkx,-32.6) rectangle ++(33.6,-12.8);
+    \fill[testgreen] (\pkx,-32.6) rectangle ++(1.2,-12.8);
+  \end{scope}
+  \draw[udsgreylight,line width=0.5pt,rounded corners=1.2mm] (\pkx,0) rectangle ++(33.6,-45.4);
+  \node[anchor=north west,inner sep=0pt,font=\ttfamily\fontsize{7}{8.4}\selectfont,text=white!70!#4,
+    align=left] at (\pkx+1.8,-1.5) {#2/\\\textcolor{white}{\bfseries #3}};
+  \node[pkg who] at (\pkx+1.8,-10.8) {#5};
+  \node[pkg what] at (\pkx+1.8,-14.8) {#6};
+  \node[pkg text] at (\pkx+1.8,-22.6) {#7};
+  \node[pkg text,text width=28.2mm] at (\pkx+3.6,-34.4) {\textcolor{testgreen}{\faCheck}\enspace #8};}
+\begin{frame}[source={GitHub, 3 Nov 2026: obra/superpowers v7.0.1 · multica-ai/andrej-karpathy-skills · open-gsd/gsd-core v1.20.0 · mattpocock/skills v1.3.1}]{Other skill packages, one shared core}
+  \begin{tikzpicture}[x=1mm,y=1mm,
+      pkg who/.style={anchor=north west,inner sep=0pt,font=\scriptsize,text=udsgrey,text width=30.4mm,align=left},
+      pkg what/.style={anchor=north west,inner sep=0pt,font=\footnotesize\bfseries,text=udsdark,
+        text width=30.4mm,align=left,execute at begin node={\hyphenpenalty=10000\raggedright}},
+      pkg text/.style={anchor=north west,inner sep=0pt,font=\scriptsize,text=udsdark,text width=30.4mm,
+        align=left,execute at begin node={\hyphenpenalty=10000\raggedright}}]
+    \useasboundingbox (0,0) rectangle (144,-54);
+    \pkgcard{0}{mattpocock}{skills}{udsdark}{Matt Pocock}{small skills you combine}
+      {grill, spec, tickets, implement, review}{\fn{/tdd}: red before green, at agreed seams}
+    \pkgcard{1}{obra}{superpowers}{udsblue}{Jesse Vincent}{a whole method in 15 skills}
+      {brainstorm, plan, execute, review, finish}{no production code without a failing test first}
+    \pkgcard{2}{multica-ai}{andrej-karpathy-skills}{udsblue}{from Karpathy's notes}{one \fn{CLAUDE.md}, four rules}
+      {think first, keep it simple, change only what is asked, set checkable goals}
+      {a bug fix starts with a test that reproduces the bug}
+    \pkgcard{3}{open-gsd}{gsd-core}{udsblue}{continues Get Shit Done}{a whole project in phases, 72 commands}
+      {discuss, plan, execute, verify, ship}{tests mapped to requirements before any code; TDD optional}
+    % what all four share
+    \fill[greentint] (0,-48) rectangle (144,-54);
+    \node[anchor=west,inner sep=0pt,font=\footnotesize\bfseries,text=testgreen] at (2,-51)
+      {\faCheckDouble\enspace in all four, the check is set before the code is written};
+  \end{tikzpicture}
+  \note{\textbf{41:50--42:50}\par
+    Pocock's collection is one of several; three others are worth a look.\par
+    Superpowers, by Jesse Vincent, is a whole method, from brainstorming to finishing the
+      branch; its test-driven skill allows no production code without a failing test.\par
+    The Karpathy skills are one CLAUDE.md with four rules, written by Jiayuan Zhang from Andrej
+      Karpathy's notes on how models go wrong in code; the last rule turns a task into a goal
+      that can be checked, such as a test that reproduces a bug.\par
+    GSD Core, the continuation of Get Shit Done, runs a whole project in spec-driven phases; it
+      maps test coverage to the requirements before any code, and full TDD is an option.\par
+    They differ in how much of the process they take over; Pocock's README prefers small skills
+      you combine to systems that own the process.\par
+    What they share is section 7: the check is decided before the code.\par
+    As with any skill, read them before installing and note the version.}
+\end{frame}
+
+% --------------------------------------------------------------- checklist
+\begin{frame}{Checklist for your repository}
+  \setbeamertemplate{itemize item}{\raisebox{-0.1ex}{\textcolor{udsblue}{\faSquare[regular]}}}
+  \setlength\leftmargini{5mm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.3\textwidth}
+      \textbf{\color{udsdark}Groundwork}\par\vskip1mm
+      \begin{itemize}\footnotesize\setlength\itemsep{2mm}
+        \item a git repository; commit before each agent task
+        \item the environment in one file, with a lockfile
+        \item Ruff and mypy configured, run in CI
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.31\textwidth}
+      \textbf{\color{udsblue}Context}\par\vskip1mm
+      \begin{itemize}\footnotesize\setlength\itemsep{2mm}
+        \item \fn{AGENTS.md}: commands, boundaries, pointers
+        \item \fn{GLOSSARY.md}: the key terms
+        \item \fn{CODING\_STANDARDS.md}: what review checks
+        \item \fn{docs/adr/}: decisions people reopen
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.33\textwidth}
+      \textbf{\color{udsred}Control}\par\vskip1mm
+      \begin{itemize}\footnotesize\setlength\itemsep{2mm}
+        \item one fast check on synthetic data
+        \item tests agreed before the code
+        \item raw data read-only; confidential data out of reach
+        \item sandbox, network and approvals set in advance
+        \item a named reviewer for the code and the science
+      \end{itemize}
+    \end{column}
+  \end{columns}
+  \note{\textbf{42:50--43:40}\par
+    Groundwork: a git repository with a commit before every agent task, an environment described
+      in one file with a lockfile, and Ruff and mypy running in CI.\par
+    Context: AGENTS.md, the glossary, the coding standards and ADRs, so that requests can stay
+      short.\par
+    Control: one reliable check, tests agreed before the code, data and secrets out of reach,
+      deliberate sandbox and approval settings, and a person who reviews both the code and the
+      science.\par
+    None of this needs a new tool, and most of it helps human collaborators too.}
+\end{frame}
+
+% -------------------------------------------------------------- discussion
+\begin{frame}[noframenumbering]{Questions and discussion}
+  % one full-width column, so the list starts where the columns of other slides do
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{\textwidth}
+      \begin{itemize}\setlength\itemsep{2.4mm}
+        \item Which of your projects is not under git yet?
+        \item Which repository would you try this on first, and who reviews it?
+        \item Which decision in your project deserves an ADR?
+        \item Which single command tells you that your code still works?
+        \item Which data must never be within an agent's reach?
+      \end{itemize}
+    \end{column}
+  \end{columns}
+  \note{\textbf{43:40--44:30}\par
+    Close with concrete questions: projects still without version control, a first repository to try
+      and its reviewer, a decision worth recording, the one command that shows the code still
+      works, and data that must stay out of reach.\par
+    Templates and references follow in the appendix.}
+\end{frame}

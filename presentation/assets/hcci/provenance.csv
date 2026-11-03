@@ -1,0 +1,11 @@
+output,aspect,source,File Name,Sample,Kind,Etching,SEM,Detector,Voltage,Dwell Time cat,Pixel Size
+spec-ascast.jpg,1.6,Images/21.png,21,AsCast,Detail,Vilella,Helios G4 PFIB CXe,BSE,10000,high,1.34896e-08
+spec-q980-0h.jpg,1.6,Images/57.png,57,Q980_0h_WC,Detail,Vilella,Helios G4 PFIB CXe,BSE,10000,high,1.34896e-08
+spec-q980-9h.jpg,1.6,Images/93.png,93,Q980_9h_AC,Detail,Vilella,Helios G4 PFIB CXe,BSE,10000,high,1.34896e-08
+overview-se.jpg,1.3863,Images/49.png,49,Q980_0h_WC,Overview,Vilella,Helios G4 PFIB CXe,SE,10000,high,6.74479e-08
+overview-bse.jpg,1.3863,Images/51.png,51,Q980_0h_WC,Overview,Vilella,Helios G4 PFIB CXe,BSE,10000,high,6.74479e-08
+overview-inlens.jpg,1.3863,Images/53.png,53,Q980_0h_WC,Overview,Vilella,Helios G4 PFIB CXe,InLens,10000,high,6.74479e-08
+detail-se.jpg,1.3982,Images/55.png,55,Q980_0h_WC,Detail,Vilella,Helios G4 PFIB CXe,SE,10000,high,1.34896e-08
+detail-bse.jpg,1.3982,Images/57.png,57,Q980_0h_WC,Detail,Vilella,Helios G4 PFIB CXe,BSE,10000,high,1.34896e-08
+detail-inlens.jpg,1.3982,Images/59.png,59,Q980_0h_WC,Detail,Vilella,Helios G4 PFIB CXe,InLens,10000,high,1.34896e-08
+detail-mask.png,1.3982,Masks/57_Mask.png,57,Q980_0h_WC,Detail,Vilella,,,,,
