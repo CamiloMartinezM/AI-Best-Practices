@@ -1,6 +1,7 @@
 """Copy downscaled HCCI SEM micrographs into the deck and record their provenance.
 
-The images come from the open HCCI SEM dataset (one high-chromium cast
+The images come from the open HCCI SEM dataset on Zenodo
+(https://doi.org/10.5281/zenodo.21931379, CC BY 4.0; one high-chromium cast
 iron specimen per material state). Each micrograph output is a grayscale JPEG,
 either centre-cropped to the aspect ratio of its slot on the slides or, for a
 full-frame output, uncropped, so that positions inside it, such as the detail

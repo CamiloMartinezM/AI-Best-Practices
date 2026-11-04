@@ -19,6 +19,8 @@ A LaTeX Beamer talk on delegating research-code tasks to coding agents. It cover
 | `presentation/tools/prepare_hcci_images.py` | Re-creates the HCCI micrographs, cropped or full frame, and the mask from the dataset |
 | `presentation/build.ps1` | Build script (XeLaTeX, three passes) |
 
+`THIRD-PARTY-NOTICES.md` lists the material by others in the slides and notes, with its licence: the HCCI micrographs (CC BY 4.0), the excerpts of Matt Pocock's skills (MIT), the two logos and the screenshots.
+
 ## Build
 
 From the `presentation` folder in PowerShell:
