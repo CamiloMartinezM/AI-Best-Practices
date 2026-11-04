@@ -75,49 +75,12 @@ What follows, including the costs.
   \end{columns}
 \end{frame}
 
-% ------------------------------------------------------- task specification
-\begin{frame}[fragile]{A3\enspace Template: bounded task specification}
-  \begin{columns}[T,onlytextwidth]
-    \begin{column}{0.62\textwidth}
-\begin{codefile}[basicstyle=\ttfamily\fontsize{7}{8.1}\selectfont]{spec.md}
-# Task: <one-line objective>
-## Objective
-What is true afterwards? Name modules, functions, options.
-## Context
-Glossary terms, relevant ADRs, input and output formats.
-## Constraints
-Files not to touch; dependencies, data and compute limits.
-## Acceptance criteria
-- Observable behaviour, including failure cases
-- Determinism and reproducibility requirements
-## Test seams
-Public interfaces the tests use; nothing else is tested.
-## Verification
-- Command to run and the expected result
-- Report: changed files, test output, assumptions
-## Out of scope
-What must not change in this task.
-\end{codefile}
-    \end{column}
-    \begin{column}{0.35\textwidth}
-      \footnotesize
-      \begin{itemize}\setlength\itemsep{1.4mm}
-        \item acceptance criteria as observable behaviour
-        \item at least one failure case, e.g.\ fewer specimens than folds
-        \item the test seams; the first test approved before the code
-        \item the verification command: the agent runs it
-        \item what is out of scope: agents tidy up beyond the task
-        \item in a prepared repository, context and constraints are pointers to files
-      \end{itemize}
-    \end{column}
-  \end{columns}
-\end{frame}
 
 \section[Tool details]{Tool details}
 
 % --------------------------------------------------------------------- uv
-% A4 and A5 are kept for questions after slide 11; their notes say so instead of giving a time
-\begin{frame}[fragile,source={Astral (2026), uv documentation: projects, running commands, lockfile; uv README and its speed benchmark}]{A4\enspace The upgrade: uv}
+% A3 and A4 are kept for questions after slide 6; their notes say so instead of giving a time
+\begin{frame}[fragile,source={Astral (2026), uv documentation: projects, running commands, lockfile; uv README and its speed benchmark}]{A3\enspace The upgrade: uv}
   \begin{columns}[T,onlytextwidth]
     \begin{column}{0.49\textwidth}
       {\footnotesize\bfseries A uv project\par}\vskip1.2mm
@@ -162,8 +125,8 @@ $ uv sync                    # rebuild .venv
 \end{frame}
 
 % ------------------------------------------------------------ conda or uv
-\begin{frame}[source={conda (2026) · Astral (2026), uv: PyTorch integration · prefix.dev (2026), pixi}]{A5\enspace conda or uv?}
-  % one question decides; the rest of the comparison is what slide 11 and A4 show
+\begin{frame}[source={conda (2026) · Astral (2026), uv: PyTorch integration · prefix.dev (2026), pixi}]{A4\enspace conda or uv?}
+  % one question decides; the rest of the comparison is what slide 6 and A3 show
   \begin{tikzpicture}[x=1mm,y=1mm,
       ask/.style={human,text width=60mm,inner sep=1.6mm,font=\footnotesize,align=center},
       tool/.style={agent,anchor=north,text width=58mm,inner sep=1.8mm,font=\footnotesize,align=left},
@@ -206,7 +169,7 @@ $ uv sync                    # rebuild .venv
 
 % ------------------------------------------------------- Codex discovery
 \begin{frame}[source={OpenAI (2026), Custom instructions with AGENTS.md · Codex configuration reference}]
-  {A6\enspace Codex: how instruction files are found}
+  {A5\enspace Codex: how instruction files are found}
   \begin{tikzpicture}[x=1mm,y=1mm,
       file/.style={artifact,minimum width=33mm,minimum height=5.2mm,inner sep=0.6mm,font=\ttfamily\scriptsize},
       dir/.style={box,minimum width=40mm,minimum height=5.2mm,inner sep=0.6mm,font=\ttfamily\scriptsize}]
@@ -240,43 +203,16 @@ $ uv sync                    # rebuild .venv
     \foreach \t [count=\i from 0] in
       {{Built \textbf{once per run}: restart Codex after editing an instruction file.},
        {\fn{project\_doc\_max\_bytes} (default 32\,KiB) limits instruction \emph{text}; it is not the model's context window.},
-       {Check what loaded: ask Codex to summarize its current instructions (command in A7).}} {
+       {Check what loaded: ask Codex to summarize its current instructions.}} {
       \node[box,fill=darktint,draw=none,anchor=north west,text width=43mm,align=left,
         font=\scriptsize,minimum height=9.5mm] at (\i*49,-44.5) {\t};
     }
   \end{tikzpicture}
 \end{frame}
 
-% ---------------------------------------------------------- Codex details
-\begin{frame}[source={OpenAI (2026), Codex documentation and source code: AGENTS.md, configuration, sandboxing, approvals, skills}]{A7\enspace Codex: files, limits and controls}
-  \scriptsize\renewcommand\arraystretch{1.2}\setlength\tabcolsep{3pt}
-  \begin{tabularx}{\textwidth}{@{}>{\bfseries}L{19mm}X@{}}
-    \toprule
-    Global file  & In \fn{\$CODEX\_HOME} (default \fn{\textasciitilde/.codex}): \fn{AGENTS.override.md} if present and
-                   non-empty, otherwise \fn{AGENTS.md}; only the first non-empty file is used.\\
-    Project root & Found by walking up from the working directory to a root marker (default \fn{.git};
-                   \fn{project\_root\_markers}). Without a root, only the working directory is checked.\\
-    Per folder   & \fn{AGENTS.override.md}, then \fn{AGENTS.md}, then names in \fn{project\_doc\_fallback\_filenames};
-                   at most one file per folder.\\
-    Order        & Concatenated from the root down to the working directory, joined by blank lines; files
-                   closer to the working directory come later and override earlier guidance.\\
-    Size         & \fn{project\_doc\_max\_bytes}, 32\,KiB by default; Codex stops adding files at the limit.\\
-    Timing       & Built once per run, usually once per interactive session; restart after editing.\\
-    Checks       & \fn{codex --ask-for-approval never "Summarize the current instructions."};
-                   \fn{codex --cd <folder> ...} for nested folders; logs with \fn{-c log\_dir=./.codex-log}.\\
-    Sandbox      & \fn{read-only}, \fn{workspace-write} (the usual local mode), \fn{danger-full-access}. In
-                   \fn{workspace-write} the network is off unless enabled; \fn{.git}, \fn{.agents}, \fn{.codex},
-                   \fn{.aws} stay read-only.\\
-    Approvals    & \fn{on-request}, \fn{never} or granular rules; \fn{untrusted} is retired; \fn{on-failure} is
-                   read as \fn{on-request}.\\
-    Skills       & Folders with \fn{SKILL.md} in \fn{.agents/skills} (repository) or \fn{\$HOME/.agents/skills};
-                   invoked with \fn{\$name} or \fn{/skills}, or implicitly when a task matches.\\
-    \bottomrule
-  \end{tabularx}
-\end{frame}
 
 % ------------------------------------------------- Pocock: video vs current
-\begin{frame}[source={Pocock (2026), video of 16 Jul 2026 · mattpocock/skills v1.3.1 · aihero.dev/skills}]{A8\enspace Pocock's workflow, then and now}
+\begin{frame}[source={Pocock (2026), video of 16 Jul 2026 · mattpocock/skills v1.3.1 · aihero.dev/skills}]{A6\enspace Pocock's workflow, then and now}
   \scriptsize\renewcommand\arraystretch{1.28}\setlength\tabcolsep{3pt}
   \begin{tabularx}{\textwidth}{@{}>{\bfseries}L{22mm}L{55mm}X@{}}
     \toprule
@@ -300,21 +236,21 @@ $ uv sync                    # rebuild .venv
 \section[Sources]{Sources}
 
 % -------------------------------------------------------------- references
-\begin{frame}{A9\enspace References: tools and workflow}
+\begin{frame}{A7\enspace References: tools and workflow}
   \scriptsize\setlength\parskip{0.9mm}\vskip-\parskip
   OpenAI (2026). \emph{Custom instructions with AGENTS.md}.
   \url{https://learn.chatgpt.com/docs/agent-configuration/agents-md}, accessed 19~Oct~2026.\par
-  OpenAI (2026). Codex documentation: \emph{Configuration reference}, \emph{Sandboxing}, \emph{Agent approvals and
-  security}, \emph{Non-interactive mode}, \emph{Build skills}. \url{https://learn.chatgpt.com/docs}, accessed 19--22~Oct~2026;
-  source code, \url{https://github.com/openai/codex}.\par
-  OpenAI (2026). \emph{Running Codex safely at OpenAI}. 8~May~2026. \url{https://openai.com/index/running-codex-safely/}\par
+  OpenAI (2026). Codex documentation: \emph{Configuration reference}, \emph{Agent approvals and security},
+  \emph{Non-interactive mode}, \emph{Build skills}. \url{https://learn.chatgpt.com/docs}, accessed 19--22~Oct~2026.\par
   AGENTS.md: a simple, open format for guiding coding agents. \url{https://agents.md/}, accessed 19~Oct~2026.\par
   Agent Skills format. \url{https://agentskills.io/}, accessed 19~Oct~2026.\par
   Anthropic (2026). Claude Code documentation: \emph{Best practices}, \emph{Memory}, \emph{Checkpointing}, \emph{Tools
-  reference}, \emph{Worktrees}, \emph{Desktop}, \emph{CLI reference}. \url{https://code.claude.com/docs},
-  accessed 20~Oct~2026.\par
-  Microsoft (2026). VS Code documentation: \emph{Source control}, \emph{Python environments}, \emph{Editing Python}.
-  \url{https://code.visualstudio.com/docs}, accessed 20~Oct~2026.\par
+  reference}, \emph{Worktrees}, \emph{Desktop}, \emph{CLI reference}, \emph{Sessions}.
+  \url{https://code.claude.com/docs}, accessed 20~Oct~2026, \emph{Sessions} 4~Nov~2026.\par
+  Anthropic (2026). \emph{Prompting Claude Opus 5.5}.
+  \url{https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5-5};
+  OpenAI (2026). \emph{Using GPT-6}. \url{https://developers.openai.com/api/docs/guides/latest-model};
+  both accessed 4~Nov~2026.\par
   M.~Pocock (2026). \emph{mattpocock/skills}, v1.3.1, commit 49dd158 (9~Oct~2026), MIT licence.
   \url{https://github.com/mattpocock/skills}\par
   M.~Pocock (2026). \emph{AI skills for real engineers}, \url{https://www.aihero.dev/skills}, and \emph{v1.3: /implement-spec,
@@ -324,7 +260,7 @@ $ uv sync                    # rebuild .venv
   \url{https://www.youtube.com/watch?v=M6mYodf0dJM}\par
 \end{frame}
 
-\begin{frame}{A10\enspace References: git, environments and checks}
+\begin{frame}{A8\enspace References: git, environments and checks}
   \scriptsize\setlength\parskip{0.9mm}\vskip-\parskip
   S.~Chacon, B.~Straub (2014). \emph{Pro Git}, 2nd ed. Apress. \url{https://git-scm.com/book}; git documentation,
   \emph{git-worktree}, \url{https://git-scm.com/docs/git-worktree}, accessed 20--21~Oct~2026.\par
@@ -342,14 +278,18 @@ $ uv sync                    # rebuild .venv
   Astral (2026). \emph{Ruff documentation}, v0.17: rules, configuration, editor setup.
   \url{https://docs.astral.sh/ruff/}\par
   mypy documentation, v2.4. \url{https://mypy.readthedocs.io}; Microsoft (2026). \emph{Pylance} README and FAQ,
-  \url{https://github.com/microsoft/pylance-release}; \emph{Mypy Type Checker}, \url{https://github.com/microsoft/vscode-mypy}\par
+  \url{https://github.com/microsoft/pylance-release}; \emph{Mypy Type Checker}, \url{https://github.com/microsoft/vscode-mypy};
+  VS Code documentation: \emph{Source control}, \emph{Python environments}, \emph{Editing Python},
+  \url{https://code.visualstudio.com/docs}, accessed 20~Oct~2026.\par
 \end{frame}
 
-\begin{frame}{A11\enspace References: methods and evidence}
+\begin{frame}{A9\enspace References: methods and evidence}
   \scriptsize\setlength\parskip{0.9mm}\vskip-\parskip
   K.~Beck (2002). \emph{Test-Driven Development: By Example}. Addison-Wesley.\par
   M.~Nygard (2011). \emph{Documenting architecture decisions}. Cognitect blog, 15~Nov~2011.
   \url{https://www.cognitect.com/blog/2011/11/15/documenting-architecture-decisions}\par
+  DrivenData (2026). \emph{Cookiecutter Data Science}, v2: a project layout for data science.
+  \url{https://cookiecutter-data-science.drivendata.org/}, accessed 4~Nov~2026.\par
   N.~S.~Mathews, M.~Nagappan (2024). \emph{Test-driven development for code generation}. ASE~’24.
   \url{https://doi.org/10.1145/3691620.3695527}; arXiv:2402.13521\par
   S.~Kapoor, A.~Narayanan (2023). \emph{Leakage and the reproducibility crisis in machine-learning-based science}.
@@ -359,7 +299,7 @@ $ uv sync                    # rebuild .venv
   case study}. Zenodo, v1, CC~BY~4.0. \url{https://doi.org/10.5281/zenodo.21931379}; DFG project MU~959/57-1.\par
 \end{frame}
 
-\begin{frame}{A12\enspace References: books and skill packages}
+\begin{frame}{A10\enspace References: books and skill packages}
   \scriptsize\setlength\parskip{0.9mm}\vskip-\parskip
   A.~Hunt, D.~Thomas (1999). \emph{The Pragmatic Programmer: From Journeyman to Master}. Addison-Wesley;
   20th anniversary ed., D.~Thomas, A.~Hunt (2019), \emph{The Pragmatic Programmer: Your Journey to Mastery}.\par
@@ -375,6 +315,4 @@ $ uv sync                    # rebuild .venv
   \url{https://github.com/obra/superpowers}\par
   J.~Zhang (2026). \emph{andrej-karpathy-skills}, a \fn{CLAUDE.md} derived from A.~Karpathy's observations on LLM coding
   pitfalls. \url{https://github.com/multica-ai/andrej-karpathy-skills}, accessed 3~Nov~2026.\par
-  Open GSD (2026). \emph{gsd-core}, v1.20.0 (3~Nov~2026), MIT licence; the continuation of Get Shit Done.
-  \url{https://github.com/open-gsd/gsd-core}\par
 \end{frame}

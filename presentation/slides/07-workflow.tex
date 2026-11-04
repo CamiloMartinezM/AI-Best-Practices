@@ -1,5 +1,5 @@
 \section[Workflow]{Skills and an end-to-end workflow}
-\sectionframe{06}{Skills and an end-to-end workflow}
+\sectionframe{07}{Skills and an end-to-end workflow}
   {How does a request become a reviewed change?}
   {\faProjectDiagram}
 
@@ -15,7 +15,7 @@
       pair/.style={udsgreymid,line width=0.5pt,dash pattern=on 1pt off 1pt},
       key/.style={fill=white,inner xsep=0.8mm,inner ysep=0.3mm,font=\scriptsize,text=udsgrey},
       say/.style={anchor=north west,inner sep=0pt,font=\scriptsize,text=udsdark}]
-    \useasboundingbox (0,0) rectangle (144,-54);
+    \useasboundingbox (0,0) rectangle (144,-55);
     \node[head] at (0,0) {In the lab\enspace{\mdseries\color{udsgrey}a protocol}};
     \node[head] at (76,0) {In the repository\enspace{\mdseries\color{udsgrey}a skill}};
     % the protocol: a sheet on a clipboard
@@ -28,11 +28,11 @@
       \node[num] at (4.8,\y+0.95) {\i};
       \node[prot] at (8.4,\y) {\t};
     }
-    % the skill: its SKILL.md in a file window, as on the slides of section 4
+    % the skill: its SKILL.md in a file window, as on the slides of section 3
     \node[anchor=north west,inner xsep=1.8mm,inner ysep=0.8mm,text height=1.9mm,text depth=0.6mm,
       font=\ttfamily\fontsize{7}{8}\selectfont,text=udsdark] (tab) at (76,-5.6)
       {\textcolor{udsblue}{\faIcon[regular]{file-alt}}\enspace tdd/SKILL.md\enspace
-       \textcolor{udsgreymid}{\sffamily\scriptsize abridged}};
+       \textcolor{udsgreymid}{\sffamily\scriptsize shortened}};
     \begin{scope}
       \clip[rounded corners=1.2mm] (76,-5.6) rectangle (144,-43.6);
       \fill[darktint] (tab.north east) rectangle (144,-9.7);
@@ -51,16 +51,21 @@
       \draw[pair] (63.2,\y) -- (74.8,\y);
       \node[key] at (69,\y) {\k};
     }
-    \node[say] at (0,-45.6) {written once; everyone in the lab follows it};
-    \node[say] at (76,-45.6) {written once; the agent follows it when needed};
-    \node[anchor=north west,inner sep=0pt,font=\footnotesize\bfseries,text=udsblue] at (0,-50.4)
-      {one procedure per kind of task: worth writing when the task recurs};
+    \node[say] at (0,-44.8) {written once; everyone in the lab follows it};
+    \node[say] at (76,-44.8) {written once; the agent follows it when needed};
+    % when a skill is worth writing, in a strip like the one of slide 5, 2 mm below the captions
+    \fill[bluetint] (0,-49.6) rectangle (144,-55);
+    \fill[udsblue] (0,-49.6) rectangle (1.2,-55);
+    \node[anchor=west,inner sep=0pt,font=\footnotesize,text=udsdark] at (3.6,-52.3)
+      {\textcolor{udsblue}{\faClipboardList}\enspace one procedure per kind of task};
+    \node[anchor=west,inner sep=0pt,font=\footnotesize,text=udsdark] at (74,-52.3)
+      {\textcolor{udsblue}{\faRedo}\enspace worth writing when the task recurs};
   \end{tikzpicture}
-  \note{\textbf{25:00--26:00}\par
-    Section 4 gave the agent facts about the repository; a skill gives it a procedure.\par
+  \note{\textbf{27:10--28:10}\par
+    Section 3 gave the agent facts about the repository; a skill gives it a procedure.\par
     It works like a lab protocol: a name, when to use it, and the steps, written once and
       followed by whoever does the task.\par
-    A skill is the same for an agent: a Markdown file, here an abridged version of Pocock's
+    A skill is the same for an agent: a Markdown file, here a shortened version of Pocock's
       test-driven development skill.\par
     Without one, we type the same instructions into every prompt, a little differently each
       time.\par
@@ -70,10 +75,10 @@
 \end{frame}
 
 % ------------------------------------------------------------ inside a skill
-\begin{frame}[fragile,source={Pocock (2026), mattpocock/skills v1.3.1: tdd · agentskills.io, Specification · Anthropic (2026), Claude Code docs: Skills · OpenAI (2026), Build skills}]{Skills: procedures loaded when needed}
+\begin{frame}[fragile,source={Pocock (2026), mattpocock/skills v1.3.1: tdd · agentskills.io, Specification · Anthropic (2026), Claude Code docs: Skills · OpenAI (2026), Build skills}]{A skill: procedures loaded when needed}
   \begin{columns}[T,onlytextwidth]
     \begin{column}{0.57\textwidth}
-\begin{codefile}[basicstyle=\ttfamily\fontsize{7}{8.4}\selectfont]{tdd/SKILL.md\enspace\textcolor{udsgreymid}{\sffamily\scriptsize abridged}}
+\begin{codefile}[basicstyle=\ttfamily\fontsize{7}{8.4}\selectfont]{tdd/SKILL.md\enspace\textcolor{udsgreymid}{\sffamily\scriptsize shortened}}
 ---
 name: tdd
 description: Test-driven development. Use when the user
@@ -88,6 +93,9 @@ implementation details. ...
 See [tests.md](tests.md) for examples and
 [mocking.md](mocking.md) for mocking guidelines.
 \end{codefile}
+      % where the skill folders go, under the file and flush with it
+      {\scriptsize\color{udsgrey}\textcolor{udsblue}{\faFolderOpen}\enspace\fn{.claude/skills/} (Claude Code),
+       \fn{.agents/skills/} (Codex)\par}
     \end{column}
     \begin{column}{0.4\textwidth}
       % one bracket per part of the file, level with its lines; y = 0 is the top of the file window
@@ -105,13 +113,10 @@ See [tests.md](tests.md) for examples and
           \draw[udsgreymid,line width=0.6pt] (0,\ya) -- (1.4,\ya) -- (1.4,\yb) -- (0,\yb);
           \node[what] at (3.6,{(\ya+\yb)/2}) {\t};
         }
-        \node[anchor=north west,inner sep=0pt,font=\scriptsize,text=udsgrey,text width=56mm,align=left]
-          at (0,-48.4) {\textcolor{udsblue}{\faFolderOpen}\enspace\fn{.claude/skills/} (Claude Code),
-          \fn{.agents/skills/} (Codex)};
       \end{tikzpicture}
     \end{column}
   \end{columns}
-  \note{\textbf{26:00--27:10}\par
+  \note{\textbf{28:10--29:20}\par
     Technically, a skill is a folder with a SKILL.md file and, where needed, more files beside
       it.\par
     The file starts with a name and a description, which says what the skill is for and when to
@@ -126,7 +131,7 @@ See [tests.md](tests.md) for examples and
 \end{frame}
 
 % ------------------------------------------------------------ the collection
-\begin{frame}[source={Pocock (2026), mattpocock/skills v1.3.1: README · github.com/mattpocock/skills, 20 Oct 2026}]{Pocock's skills: an open collection}
+\begin{frame}[source={Pocock (2026), mattpocock/skills v1.3.1: README · github.com/mattpocock/skills, 20 Oct 2026}]{Matt Pocock's skills: an end-to-end workflow}
   \begin{columns}[T,onlytextwidth]
     \begin{column}{0.56\textwidth}
       % the repository's address, which the screenshot's crop leaves out, as a link
@@ -141,8 +146,7 @@ See [tests.md](tests.md) for examples and
           \draw (0.014,0.005) rectangle (0.123,0.058);
           \draw (0.766,0.333) rectangle (0.871,0.386);
         \end{scope}
-      \end{tikzpicture}\par\vskip1mm
-      {\scriptsize\raggedright Boxed: \fn{skills/}, its own \fn{AGENTS.md} and \fn{GLOSSARY.md}, release v1.3.1.\par}
+      \end{tikzpicture}
     \end{column}
     \begin{column}{0.41\textwidth}
       % two kinds of skill: the ones you type run a stage, and call the ones the agent may also pick
@@ -174,11 +178,11 @@ See [tests.md](tests.md) for examples and
         \node[inner sep=0pt,font=\ttfamily\fontsize{7}{8}\selectfont,text=termdim] at (28.5,-39.2) {install};
         \node[anchor=west,inner sep=0pt,font=\ttfamily\fontsize{7}{8}\selectfont,text=termfg] at (1.8,-43.4)
           {\textcolor{termgreen}{\$} npx skills@latest add mattpocock/skills};
-        \node[say,text=udsred] at (0,-47.6) {\faExclamationTriangle\enspace read them first; note the commit};
+        \node[say,text=udsred] at (0,-47.6) {\faExclamationTriangle\enspace read them first};
       \end{tikzpicture}
     \end{column}
   \end{columns}
-  \note{\textbf{27:10--28:00}\par
+  \note{\textbf{29:20--30:10}\par
     Our example is Matt Pocock's open-source collection on GitHub; the repository uses its own
       AGENTS.md and GLOSSARY.md.\par
     Its skills come in two kinds: the ones we type each run one stage of the work, and they call
@@ -186,7 +190,7 @@ See [tests.md](tests.md) for examples and
     Grill-with-docs calls domain-modeling, implement calls tdd and code-review, and tdd looks up
       codebase-design for its vocabulary.\par
     The installer copies the files into the project; skills are instructions and scripts written
-      by someone else, so read them and note the commit you installed.}
+      by someone else, so read them before the agent uses them.}
 \end{frame}
 
 % ------------------------------------------------------- the books behind
@@ -226,10 +230,8 @@ See [tests.md](tests.md) for examples and
     \node[fl] at (97.6,-39.6) {GLOSSARY.md};
     \node[sk] at (97.6,-45.2) {/domain-modeling};
     \node[sk] at (122,-39.6) {/codebase-design};
-    \node[anchor=north west,inner sep=0pt,font=\footnotesize,text=udsdark] at (0,-50.4)
-      {Pocock's README: ``They're based on decades of engineering experience.''};
   \end{tikzpicture}
-  \note{\textbf{28:00--29:10}\par
+  \note{\textbf{30:10--31:20}\par
     None of this is new: Pocock's README says the skills rest on decades of engineering
       experience, and quotes the books.\par
     The Pragmatic Programmer: no one knows exactly what they want, so the agent asks before it
@@ -237,7 +239,7 @@ See [tests.md](tests.md) for examples and
     Kent Beck's Extreme Programming brought the user stories that to-spec writes into every spec,
       and the advice to invest in the design every day.\par
     Fowler's Refactoring catalogues code smells, which code-review looks for in every diff.\par
-    Beck's red, green, refactor loop is the tdd skill, the subject of section 7.\par
+    Beck's red, green, refactor loop, the subject of section 6, is the tdd skill.\par
     Evans: one ubiquitous language for people and code, our glossary; Ousterhout: deep modules,
       much behaviour behind a small interface.\par
     What is new is the reader: the model has read these books, so a term such as tracer bullets
@@ -246,10 +248,10 @@ See [tests.md](tests.md) for examples and
 
 % Pocock's README, section "Why These Skills Exist", word for word (mattpocock/skills, MIT licence;
 % the same on main on 3 November 2026 as in v1.3.1), with its links and the aside on the commit of its example glossary dropped: notes pages of their
-% own, outside the frame, so they follow slide 25's notes page and stay out of the audience PDF. A
+% own, outside the frame, so they follow slide 29's notes page and stay out of the audience PDF. A
 % note outside a frame does not get the theme's note style, so each one sets it first.
 \note{\parindent=0pt\parskip=1.1mm\raggedright\footnotesize
-  \textbf{Slide 25, continued (1 of 5): Pocock's README, ``Why These Skills Exist''}\par
+  \textbf{Slide 29, continued (1 of 5): Pocock's README, ``Why These Skills Exist''}\par
   I built these skills as a way to fix common failure modes I see with Claude Code, Codex, and other
     coding agents.\par
   \textbf{\#1: The Agent Didn't Do What I Want}\par
@@ -267,7 +269,7 @@ See [tests.md](tests.md) for examples and
     think deeply about the change you're making. Use them \emph{every} time you want to make a
     change.}
 \note{\parindent=0pt\parskip=1.1mm\raggedright\footnotesize
-  \textbf{Slide 25, continued (2 of 5)}\par
+  \textbf{Slide 29, continued (2 of 5)}\par
   \textbf{\#2: The Agent Is Way Too Verbose}\par
   \emph{``With a ubiquitous language, conversations among developers and expressions of the code are
     all derived from the same domain model.''}\enspace--- Eric Evans, Domain-Driven-Design\par
@@ -282,7 +284,7 @@ See [tests.md](tests.md) for examples and
     (i.e.\ given a spot in the file system)''. \textbf{AFTER}: ``There's a problem with the
     materialization cascade''. This concision pays off session after session.}
 \note{\parindent=0pt\parskip=1.1mm\raggedright\footnotesize
-  \textbf{Slide 25, continued (3 of 5)}\par
+  \textbf{Slide 29, continued (3 of 5)}\par
   \textbf{\#2, continued}\par
   This is built into \fn{/grill-with-docs}. It's a grilling session, but that helps you build a shared
     language with the AI, and document hard-to-explain decisions in ADR's.\par
@@ -293,7 +295,7 @@ See [tests.md](tests.md) for examples and
     easier to navigate} for the agent; the agent also \textbf{spends fewer tokens on thinking}, because
     it has access to a more concise language.}
 \note{\parindent=0pt\parskip=1.1mm\raggedright\footnotesize
-  \textbf{Slide 25, continued (4 of 5)}\par
+  \textbf{Slide 29, continued (4 of 5)}\par
   \textbf{\#3: The Code Doesn't Work}\par
   \emph{``Always take small, deliberate steps. The rate of feedback is your speed limit. Never take on a
     task that's too big.''}\enspace--- David Thomas \& Andrew Hunt, The Pragmatic Programmer\par
@@ -311,7 +313,7 @@ See [tests.md](tests.md) for examples and
   For debugging, I've also built a \textbf{\fn{/diagnosing-bugs}} skill that wraps best debugging
     practices into a disciplined loop, gated phase by phase.}
 \note{\parindent=0pt\parskip=1.1mm\raggedright\footnotesize
-  \textbf{Slide 25, continued (5 of 5)}\par
+  \textbf{Slide 29, continued (5 of 5)}\par
   \textbf{\#4: We Built A Ball Of Mud}\par
   \emph{``Invest in the design of the system \emph{every day}.''}\enspace--- Kent Beck, Extreme Programming
     Explained\par
@@ -333,7 +335,7 @@ See [tests.md](tests.md) for examples and
     your career. Enjoy.}
 
 % ------------------------------------------------------------ flow diagram
-\begin{frame}[source={Pocock (2026), mattpocock/skills v1.3.1 · aihero.dev/skills}]{Pocock's flow: who does what}
+\begin{frame}[source={Pocock (2026), mattpocock/skills v1.3.1}]{Pocock's flow: who does what}
   \begin{tikzpicture}[x=1mm,y=1mm,
       cell/.style={minimum width=24.4mm,text width=23.2mm,inner sep=0.6mm,align=center,
         execute at begin node={\hyphenpenalty=10000}},
@@ -370,7 +372,7 @@ See [tests.md](tests.md) for examples and
       \node[lbl,anchor=north] at ({(\a+\b)/2},-54.1) {\t};
     }
   \end{tikzpicture}
-  \note{\textbf{29:10--30:20}\par
+  \note{\textbf{31:20--32:30}\par
     The main flow as the author documents it: clarify with grill-with-docs, write the spec, cut
       tickets, implement each ticket.\par
     In today's terms this is spec-driven development: an approved spec before any code, then each
@@ -387,7 +389,7 @@ See [tests.md](tests.md) for examples and
 \end{frame}
 
 % ---------------------------------------------------- a grilling session
-% \sessiondot{n}: a numbered marker, as on slide 13; \sessionmark{n} is the same without height, so a
+% \sessiondot{n}: the theme's \numbermark, 3.6 mm across; \sessionmark{n} is the same without height, so a
 % marker on a session line does not move the lines around it
 \newcommand\sessiondot[1]{\tikz[baseline=-0.75ex]\node[circle,fill=udsred,text=white,inner sep=0pt,
   minimum size=3.6mm,font=\sffamily\fontsize{7}{7}\selectfont\bfseries] {#1};}
@@ -400,7 +402,7 @@ See [tests.md](tests.md) for examples and
   \edef\sessionarrowend{\the\dimexpr\linewidth+3.2mm+\colgap-\wd0+0.1mm\relax}%
   \tikz[overlay,baseline=0pt]\draw[udsred,line width=0.8pt,-{Stealth[length=2mm,width=1.6mm]}]
     (1.4mm,0.9mm) -- (\sessionarrowend,0.9mm);}
-\begin{frame}[fragile,source={Pocock (2026), mattpocock/skills v1.3.1: grill-with-docs, grilling, domain-modeling · video of 16 Jul 2026}]{A \texttt{/grill-with-docs} session}
+\begin{frame}[fragile,source={Pocock (2026), mattpocock/skills v1.3.1: grill-with-docs, grilling, domain-modeling}]{A \texttt{/grill-with-docs} session}
   % the gap between the columns, which the glossary arrow crosses
   \edef\colgap{\the\dimexpr0.03\textwidth\relax}
   \begin{columns}[T,onlytextwidth]
@@ -445,7 +447,7 @@ Material state: the processing
       \end{minipage}
     \end{column}
   \end{columns}
-  \note{\textbf{30:20--31:40}\par
+  \note{\textbf{32:30--33:50}\par
     What grilling looks like on our request; the session is abridged and written for our example
       in the format of Pocock's skills.\par
     Each round asks every question that can be asked now, numbered, each with a recommended
@@ -525,7 +527,7 @@ Material state: the processing
       \textcolor{udsblue}{\faSearch}\enspace standards\\[0.4mm] \textcolor{udsblue}{\faSearch}\enspace spec}
     \node[say] at ([yshift=-1.4mm]w4.south) {findings for you to judge};
   \end{tikzpicture}
-  \note{\textbf{31:40--32:50}\par
+  \note{\textbf{33:50--35:00}\par
     The whole flow on our task, starting from the short request.\par
     Each stage leaves something we can open and check.\par
     Grilling settles what the repository leaves open: the default number of folds, and what
@@ -536,6 +538,57 @@ Material state: the processing
       provenance stored in the fold file.\par
     Each ticket is implemented test-first in a fresh session, and review checks the standards
       and the spec.}
+\end{frame}
+
+% ------------------------------------------------- /implement drives /tdd
+\begin{frame}[source={Pocock (2026), mattpocock/skills v1.3.1: implement, tdd · aihero.dev/skills}]{How \texttt{/implement} uses \texttt{/tdd}}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{tikzpicture}[x=1mm,y=1mm,
+          stp/.style={agent,text width=48mm,minimum height=6.6mm,align=left,font=\scriptsize,inner sep=1mm},
+          num/.style={font=\scriptsize\bfseries,text=udsblue,anchor=east,inner sep=0.8mm}]
+        \node[anchor=north west,inner sep=0pt,font=\footnotesize] at (0,0)
+          {\fn{/implement}: one ticket, one fresh session};
+        \node[stp,anchor=north west] (s1) at (6,-5)  {read the ticket};
+        \node[stp,anchor=north west,draw=testgreen,fill=greentint,line width=0.8pt,minimum height=9mm] (s2) at (6,-14)
+          {\fn{/tdd} at the agreed seams: one failing test, then just enough code to pass it};
+        \node[stp,anchor=north west] (s3) at (6,-26) {typecheck; run single test files};
+        \node[stp,anchor=north west] (s4) at (6,-35) {run the full suite once};
+        \node[stp,anchor=north west] (s5) at (6,-44) {\fn{/code-review}, then commit};
+        \foreach \i in {1,...,5} \node[num] at (s\i.west) {\i};
+        \foreach \i [evaluate=\i as \j using int(\i+1)] in {1,...,4} \draw[flow] (s\i.south) -- (s\j.north);
+        \draw[flow,draw=testgreen] ([yshift=-2.2mm]s2.east) -- ++(3.5,0) -- ++(0,4.4)
+          node[midway,right,lbl,text=testgreen] {repeat} -- ++(-3.5,0);
+      \end{tikzpicture}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \begin{gblock}[fontupper=\footnotesize]{Rules of the \texttt{/tdd} loop}
+        \begin{itemize}\setlength\itemsep{0.5mm}
+          \item seams agreed with you first
+          \item one failing test, then minimal code
+          \item one vertical slice per cycle
+          \item tests only through public interfaces
+          \item mocks only at system boundaries
+          \item refactoring left to \fn{/code-review}
+        \end{itemize}
+      \end{gblock}
+      {\footnotesize Known gaps: code written before its test; ticket left open; the run reviews its own
+       work.\par}
+    \end{column}
+  \end{columns}
+  \note{\textbf{35:00--36:10}\par
+    In Pocock's skills, implement is the build step and you invoke it yourself, one ticket per
+      fresh session.\par
+    It reads the ticket, drives the tdd skill at the agreed seams one red-green slice at a time,
+      typechecks and runs single test files as it goes, runs the full suite once at the end,
+      calls code-review and commits.\par
+    The tdd skill is a set of rules: seams agreed first, red before green, one vertical slice
+      per cycle, tests through public interfaces, mocks only at system boundaries.\par
+    The loop has no refactor step, because agents almost never do it; code-review
+      proposes refactoring instead.\par
+    The author's documentation lists the gaps: the agent sometimes writes code first, implement
+      does not close the ticket, and the review inside the same run reviews its own work, so a
+      fresh session makes a better reviewer.}
 \end{frame}
 
 % ---------------------------------------------------- when is it worth it
@@ -559,7 +612,7 @@ Material state: the processing
       \node[lbl,anchor=west,text=udsdark,font=\scriptsize] at (p.east) {\t};
     }
   \end{tikzpicture}
-  \note{\textbf{32:50--33:30}\par
+  \note{\textbf{36:10--36:50}\par
     Not every change needs five stages.\par
     Two questions decide: how large or open is the change, and does it change what a result
       means?\par

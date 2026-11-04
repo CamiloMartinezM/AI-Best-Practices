@@ -1,5 +1,5 @@
 \section[Version control]{Version control with git}
-\sectionframe{02}{Version control with git}
+\sectionframe{05}{Version control with git}
   {How do we keep every version, and see exactly what an agent changed?}
   {\faCodeBranch}
 
@@ -42,7 +42,7 @@
       \end{dblock}
     \end{column}
   \end{columns}
-  \note{\textbf{6:00--7:10}\par
+  \note{\textbf{18:10--19:20}\par
     Many of us keep versions as copies: splitting old, v2, final, fixed.\par
     After a few months nobody knows which copy produced a figure.\par
     Version control replaces the copies with one folder and its history.\par
@@ -66,7 +66,7 @@ $ git init              # once: start the history
 $ git status            # what has changed?
 $ git add src/ tests/   # choose what goes in
 $ git commit -m "Split by specimen"
-$ git log --oneline     # the history so far
+$ git push              # copy it to GitHub
 \end{terminal}
       \vskip1mm
 \begin{codefile}[style=sh,basicstyle=\ttfamily\fontsize{7.2}{9.2}\selectfont]{.gitignore}
@@ -81,11 +81,14 @@ data/          # raw and derived data stay out
       \begin{tikzpicture}
         \node[anchor=south west,inner sep=0pt,draw=udsgreylight,line width=0.4pt] (img) at (0,0)
           {\includegraphics[height=36mm]{assets/screens/vscode-scm.png}};
-        % each control, labelled with the command it replaces
-        \begin{scope}[x={(img.south east)},y={(img.north west)}]
-          \foreach \y/\t in {0.683/commit,0.521/add,0.412/status,0.057/log}
-            \draw[udsgreymid,line width=0.5pt] (1,\y) -- ++(2.5mm,0)
-              node[right,inner sep=0.6mm,font=\ttfamily\scriptsize,text=udsdark] {git \t};
+        % each control, labelled with the command it replaces; push is the cloud button of the
+        % graph's title row, so its line starts under that button and passes below the row
+        \begin{scope}[x={(img.south east)},y={(img.north west)},
+            cmd/.style={right,inner sep=0.6mm,font=\ttfamily\scriptsize,text=udsdark}]
+          \foreach \y/\t in {0.683/commit,0.521/add,0.412/status}
+            \draw[udsgreymid,line width=0.5pt] (1,\y) -- ++(2.5mm,0) node[cmd] {git \t};
+          \draw[udsgreymid,line width=0.5pt] (0.79,0.112) |- (1,0.1) -- ++(2.5mm,0)
+            node[cmd] {git push};
         \end{scope}
       \end{tikzpicture}\par\vskip1mm
       {\scriptsize VS Code's Source Control panel does the same with clicks.\par}\vskip2mm
@@ -97,12 +100,16 @@ data/          # raw and derived data stay out
       \end{panel}
     \end{column}
   \end{columns}
-  \note{\textbf{7:10--8:10}\par
+  \note{\textbf{19:20--20:20}\par
     The learning curve is shorter than its reputation.\par
     Five commands cover daily use: start the history once, check what changed, choose what goes
-      into the next snapshot, commit it with a message, and look at the history.\par
+      into the next snapshot, commit it with a message, and push it to GitHub, the remote of the
+      last slide.\par
     VS Code's Source Control panel does the same with buttons: here two files are staged, the
-      message is typed, one click on Commit, and the graph below is the history.\par
+      message is typed, one click on Commit, and the cloud button pushes; the graph below is the
+      history.\par
+    The first push needs a repository on GitHub to push to; that cloud button, Publish Branch,
+      creates one and pushes.\par
     A .gitignore file keeps out what does not belong in the history: data, environments, which
       are rebuilt from their description, model checkpoints, secrets, and the worktrees that Claude
       Code creates.\par
@@ -146,7 +153,7 @@ data/          # raw and derived data stay out
       \end{tikzpicture}
     \end{column}
   \end{columns}
-  \note{\textbf{8:10--9:20}\par
+  \note{\textbf{20:20--21:30}\par
     With git, an agent's work becomes a diff we can read before we accept it.\par
     Commit before the agent starts, so there is a checkpoint to return to.\par
     Read the diff itself, not the agent's summary of it: here, two files, every added line in
@@ -161,22 +168,21 @@ data/          # raw and derived data stay out
       otherwise.\par
     Claude Code can rewind its own file edits, but not files changed by shell commands, and its
       documentation says to keep using git.\par
-    The workflow of section 6 commits each finished piece of work, and its review compares
+    The workflow of section 7 commits each finished piece of work, and its review compares
       against a commit.}
 \end{frame}
 
 % ------------------------------------------------------------- worktrees
-\begin{frame}[fragile,source={git documentation (2026), git-worktree · Anthropic Academy (2026) · DevToolLab (2026), worktrees guide}]{Worktrees: work in parallel, merge when done}
-  \begin{columns}[T,onlytextwidth]
+\begin{frame}[fragile,source={git documentation (2026), git-worktree · Anthropic Academy (2026)}]{Worktrees: work in parallel, merge when done}
+  % the drawing carries the ideas; what a worktree is and its three commands sit beside it, level
+  % with its middle
+  \begin{columns}[c,onlytextwidth]
     \begin{column}{0.34\textwidth}
       \footnotesize
-      \begin{itemize}\setlength\itemsep{1mm}
-        \item one worktree per agent: its own folder, its own branch
-        \item reviewed, then merged into \fn{main}
-        \item one history, shared by every folder
-        \item a branch is checked out in only one worktree
-        \item \fn{main} changes only through merges
-      \end{itemize}\vskip2mm
+      \begin{itemize}\setlength\itemsep{1.5mm}
+        \item a worktree: another folder of the same repository, on its own branch
+        \item all folders share one history, so each branch merges into \fn{main}
+      \end{itemize}\vskip2.5mm
 \begin{terminal}[basicstyle=\ttfamily\fontsize{7.2}{8.5}\selectfont]{terminal}
 $ git worktree add ../folds \
     -b agent/folds
@@ -216,7 +222,7 @@ $ git worktree remove ../folds
       \end{tikzpicture}
     \end{column}
   \end{columns}
-  \note{\textbf{9:20--10:30}\par
+  \note{\textbf{21:30--22:30}\par
     A worktree is a second working folder of the same repository, checked out on its own
       branch.\par
     Each card is one: a folder next to the repository, its branch, and the agent working in it;
@@ -232,7 +238,7 @@ $ git worktree remove ../folds
 \end{frame}
 
 % ------------------------------------------- worktrees in the app and the terminal
-\begin{frame}[source={Anthropic (2026), Claude Code docs: Desktop; Worktrees; CLI reference}]{Parallel sessions in the Claude app and the terminal}
+\begin{frame}[source={Anthropic (2026), Claude Code docs: Desktop; Worktrees; CLI reference}]{How to use worktrees?}
   \begin{tikzpicture}[x=1mm,y=1mm,
       head/.style={anchor=north west,inner sep=0pt,font=\small\bfseries,text=udsdark},
       stage/.style={circle,fill=udsblue,text=white,inner sep=0pt,minimum size=5.6mm,font=\scriptsize},
@@ -281,10 +287,11 @@ $ git worktree remove ../folds
       {\scriptsize\color{udsgrey}the sessions run side by side}};
     \node[txt] at (83,-40.6) {another terminal, another name\\
       {\scriptsize\color{udsgrey}another agent}};
-    \node[txt] at (8,-48.2) {\textbf{Create PR}, merge, \textbf{Archive}};
-    \node[txt] at (83,-48.2) {exit};
+    % one line each, centred on its icon
+    \node[txt,anchor=mid west] at (8,-51.5) {\textbf{Create PR}, merge, \textbf{Archive}};
+    \node[txt,anchor=mid west] at (83,-51.5) {exit};
   \end{tikzpicture}
-  \note{\textbf{10:30--12:40}\par
+  \note{\textbf{22:30--24:00}\par
     Each session can run in its own worktree, from the Claude app or from the terminal.\par
     In the app: New or Ctrl+N, then turn on Worktree under the prompt box; it is off by default,
       so without it the agent edits your own checkout.\par
@@ -297,4 +304,82 @@ $ git worktree remove ../folds
     App sessions end with a pull request, a merge and Archive; uncommitted changes are kept for
       about thirty days.\par
     Leaving a terminal session removes an unchanged worktree and asks about a changed one.}
+\end{frame}
+
+% ------------------------------------------- tip: fork a session, then a worktree per fork
+% Top: one session's conversation, forked in two; each fork asks for a worktree (Claude Code's
+% EnterWorktree tool) and works in a folder of its own. Bottom: the Claude app's sidebar with a
+% session and the sessions forked from it, numbered as in its key, and the same in a terminal.
+\begin{frame}[source={Anthropic (2026), Claude Code docs: Sessions; Worktrees; CLI reference}]{Tip: when a session splits into two tasks, fork it}
+  \begin{tikzpicture}[x=1mm,y=1mm,
+      msg/.style={circle,fill=udsdark,inner sep=0pt,minimum size=2.2mm},
+      lane/.style={udsdark,line width=1pt},
+      ask/.style={human,anchor=west,font=\scriptsize,inner xsep=1.4mm,inner ysep=1mm,
+        rounded corners=1mm},
+      wt/.style={draw=udsblue,fill=bluetint,line width=0.6pt,rounded corners=1mm,anchor=west,
+        align=left,font=\scriptsize,text=udsdark,inner xsep=1.6mm,inner ysep=1.2mm},
+      head/.style={anchor=north west,inner sep=0pt,font=\small\bfseries,text=udsdark},
+      key/.style={anchor=west,inner sep=0pt,font=\footnotesize,text=udsdark,align=left,
+        text width=35mm},
+      mono/.style={anchor=west,inner sep=0pt,font=\ttfamily\fontsize{7}{8}\selectfont}]
+    \useasboundingbox (0,0) rectangle (144,-55);
+    % one session: its conversation so far, then the fork
+    \draw[lane] (1.1,-12) -- (50,-12);
+    \foreach \x in {1.1,9.7,18.3,26.9,35.5,44.1} \node[msg] at (\x,-12) {};
+    \node[anchor=base west,inner sep=0pt,font=\footnotesize\bfseries,text=udsdark] at (0,-7.8)
+      {one session};
+    \node[anchor=north west,inner sep=0pt,font=\scriptsize,text=udsgrey] at (0,-14.8)
+      {its conversation, kept by both forks};
+    \node[circle,fill=udsred,text=white,inner sep=0pt,minimum size=5.6mm,font=\scriptsize] (fk)
+      at (52.8,-12) {\faClone};
+    \node[anchor=base,inner sep=0pt,font=\ttfamily\footnotesize\bfseries,text=udsred] at (52.8,-7.8) {/fork};
+    % until each fork has a worktree, both work in the same folder
+    \node[anchor=west,inner sep=0pt,font=\scriptsize,text=udsred] at (70,-12)
+      {\faExclamationTriangle\enspace both forks still share one folder};
+    % each fork asks for a worktree and moves into it
+    \foreach \y/\n/\f/\t in {-4.4/1/folds/the folds,-19.6/2/check/the fold check} {
+      \draw[lane] (fk.east) to[out=0,in=180] (68.5,\y) -- (72.5,\y);
+      \node[ask] (a\n) at (72.5,\y) {\faUser\enspace work in a worktree};
+      \draw[flow] (a\n.east) -- ++(6.5,0) coordinate (c\n);
+      \node[wt] at (c\n) {{\color{udsblue}\faFolderOpen}\ \fn{.claude/worktrees/\f/}\\
+        {\color{udsblue}\faRobot}\ fork \n: \t};
+    }
+    % below: the Claude app's sidebar, and the same in a terminal
+    \node[head] at (0,-27.4) {Claude app};
+    \node[head] at (100,-27.4) {Terminal};
+    \draw[udsgreylight,line width=0.4pt] (96.5,-27.4) -- (96.5,-54.6);
+    \node[anchor=north west,inner sep=0pt,draw=udsgreylight,line width=0.4pt] (shot) at (0,-31.4)
+      {\includegraphics[height=23.4mm]{assets/screens/claude-app-forks.png}};
+    \begin{scope}[shift={(shot.south west)},x={($(shot.south east)-(shot.south west)$)},
+        y={($(shot.north west)-(shot.south west)$)}]
+      \node[number mark] at (0.813,0.879) {1};
+      \node[number mark] at (0.043,0.387) {2};
+      \node[number mark] at (0.954,0.682) {3};
+    \end{scope}
+    \foreach \t [count=\k] in {one session,{its forks, one per task},pull request merged} {
+      \node[number mark] at (56.4,-33.6-\k*6.6+6.6) {\k};
+      \node[key] at (59.6,-33.6-\k*6.6+6.6) {\t};
+    }
+    \fill[termbg,rounded corners=1.2mm] (100,-31.4) rectangle (144,-45.6);
+    \foreach \c [count=\i] in {termdot1,termdot2,termdot3} \fill[\c] (100.4+\i*2.3,-34) circle (0.7);
+    \node[inner sep=0pt,font=\ttfamily\fontsize{7}{8}\selectfont,text=termdim] at (124.6,-34)
+      {second terminal};
+    \draw[white!18!termbg,line width=0.4pt] (100,-36.6) -- (144,-36.6);
+    \node[mono,text=termfg] at (102.4,-39.6) {\textcolor{termgreen}{\$} claude -c --fork-session};
+    \node[mono,text=termfg] at (102.4,-43) {> work in a worktree};
+    \node[anchor=north west,inner sep=0pt,font=\scriptsize,text=udsgrey] at (100,-47.4)
+      {forks the latest session in this folder};
+  \end{tikzpicture}
+  \note{\textbf{24:00--24:50}\par
+    A tip from daily use: a session often turns into more than one task.\par
+    Fork it with slash fork rather than start again: each fork keeps the whole conversation, the
+      plan and the decisions included.\par
+    Then ask each fork to work in a worktree; Claude Code creates one under .claude/worktrees and
+      moves the session into it.\par
+    Until then both forks work in the same folder, and their edits can collide.\par
+    In the app the forks sit under their session in the sidebar: here four tasks that came out of
+      one session, each in its own worktree; purple marks a merged pull request.\par
+    In a terminal, slash fork copies the conversation into a new session and keeps you in this
+      one; from a second terminal, claude with continue and fork-session copies the latest session
+      of the folder.}
 \end{frame}

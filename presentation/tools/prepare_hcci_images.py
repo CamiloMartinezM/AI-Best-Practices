@@ -21,8 +21,8 @@ from PIL import Image
 
 # output name -> (dataset image ID, width/height of the slot on the slide; None keeps the full frame)
 SELECTION = {
-    # slide 37: one detail micrograph per specimen, Vilella etching, Helios G4 PFIB CXe, BSE,
-    # 10 kV, long dwell
+    # one detail micrograph per specimen, Vilella etching, Helios G4 PFIB CXe, BSE, 10 kV, long
+    # dwell; no slide shows them at present
     "spec-ascast": (21, 1.6),          # AsCast
     "spec-q980-0h": (57, 1.6),         # Q980_0h_WC
     "spec-q980-9h": (93, 1.6),         # Q980_9h_AC

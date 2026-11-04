@@ -11,7 +11,7 @@
 \RequirePackage{fontspec}
 \RequirePackage{etoolbox}
 \RequirePackage{tikz}
-\usetikzlibrary{arrows.meta,calc}
+\usetikzlibrary{arrows.meta,calc,decorations.pathmorphing}
 \RequirePackage[most]{tcolorbox}
 \RequirePackage{listings}
 \RequirePackage{fontawesome5}
@@ -275,6 +275,14 @@
   \fi}
 \newcommand\tdir[3]{\dtm@trow{#1}{\textcolor{udsblue}{\faFolderOpen}}{#2}{#3}}
 \newcommand\tfile[3]{\dtm@trow{#1}{\textcolor{udsgreymid}{\faIcon[regular]{file-alt}}}{#2}{#3}}
+% Rows that stand for parts left as they were, in grey.
+\newcommand\tdirgrey[3]{\dtm@trow{#1}{\textcolor{udsgreylight}{\faFolderOpen}}{\textcolor{udsgreymid}{#2}}{#3}}
+\newcommand\tfilegrey[3]{\dtm@trow{#1}{\textcolor{udsgreylight}{\faIcon[regular]{file-alt}}}%
+  {\textcolor{udsgreymid}{#2}}{#3}}
+% The same rows inside another tikzpicture[x=1mm,y=1mm], so that arrows can join a tree to other
+% drawings: \treestart{note at=..,row height=..} starts a tree whose first row is at y = 0 of the
+% current scope, and x = 0 is the page's inner left edge of a foldertree. Draw the page yourself.
+\newcommand\treestart[1]{\pgfkeys{/dtmtree/.cd,#1}\setcounter{dtm@trow}{0}\dtm@tclear{-1}}
 \newcommand\tbadge[2]{\node[anchor=west,inner xsep=1mm,inner ysep=0.45mm,
   font=\fontsize{7}{8}\selectfont\bfseries,#1] at (\dtm@tbadgex,\dtm@ty) {#2};}
 \newcommand\tstrike{\draw[udsred,line width=0.6pt] (tname.west) -- (tname.east);}
@@ -295,7 +303,13 @@
   artifact/.style={box,draw=udsdark,fill=darktint,font=\ttfamily\scriptsize},
   flow/.style={-{Stealth[length=1.7mm,width=1.3mm]},line width=0.6pt,draw=udsdark},
   lbl/.style={font=\scriptsize,text=udsgrey,inner sep=0.6mm},
+  % a numbered marker on a screenshot: \node[number mark] at (x,y) {1};
+  number mark/.style={circle,fill=udsred,text=white,font=\scriptsize\bfseries,inner sep=0pt,
+    minimum size=4mm},
 }
+% The same marker in a line of text, for example as the label of the item it numbers:
+% \item[\numbermark{1}] or \numbermark{1} in a table cell.
+\newcommand\numbermark[1]{\tikz[baseline=-0.75ex]\node[number mark]{#1};}
 
 % ----------------------------------------------- task specification cards
 % The five parts of a task specification (objective, context, constraints, acceptance,

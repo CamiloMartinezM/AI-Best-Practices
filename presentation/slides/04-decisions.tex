@@ -1,5 +1,5 @@
-\section[Decisions]{Architecture decision records}
-\sectionframe{05}{Architecture decision records}
+\section[Decisions]{Architecture Decision Records (ADRs)}
+\sectionframe{04}{Architecture Decision Records (ADRs)}
   {Why does the project work this way, and what if we change our minds?}
   {\faBalanceScale}
 
@@ -30,13 +30,13 @@
     \node[anchor=base west,inner sep=0pt,font=\scriptsize,text=udsgrey] at (72,-41)
       {no ADR: plot styling, renames};
   \end{tikzpicture}
-  \note{\textbf{20:30--21:30}\par
+  \note{\textbf{13:40--14:40}\par
     An architecture decision record keeps one decision with its reasons.\par
     Nygard's format: title, context, decision, status and consequences, including the bad
       ones.\par
     Records are numbered in sequence, numbers are never reused, and a superseded record stays in
       the repository.\par
-    A useful test, from the skills of section 6: write one only when the decision is hard to
+    A useful test, from the skills of section 7: write one only when the decision is hard to
       reverse, would surprise a newcomer, and came from a real trade-off.\par
     In research code that is usually about what a number means: the split unit, class
       definitions, units and normalisation, the metric.\par
@@ -83,7 +83,7 @@ One specimen per state: a held-out specimen is a new state.
       \end{panel}
     \end{column}
   \end{columns}
-  \note{\textbf{21:30--22:30}\par
+  \note{\textbf{14:40--15:40}\par
     The record for our running example.\par
     The context explains why a random patch split misleads here; the decision is short and
       testable; the considered options show that splitting by micrograph was rejected for the
@@ -95,8 +95,9 @@ One specimen per state: a held-out specimen is a new state.
 \end{frame}
 
 % ------------------------------------------------------------- file roles
-\begin{frame}[source={OpenAI (2026), Custom instructions with AGENTS.md · Pocock (2026), mattpocock/skills v1.3.1: code-review; v1.3 changelog}]{Six files, six jobs}
-  % the six files of sections 1, 4 and 5 placed on an agent session, at the moment each one is read
+\begin{frame}[source={OpenAI (2026), Custom instructions with AGENTS.md · Pocock (2026), mattpocock/skills v1.3.1: code-review; v1.3 changelog}]{When the agent reads each file}
+  % the files of sections 3 and 4, the README and the task specification of section 1, placed on
+  % an agent session at the moment each one is read
   \begin{tikzpicture}[x=1mm,y=1mm,
       chip/.style={draw=udsgreylight,fill=white,rounded corners=0.6mm,inner xsep=1mm,inner ysep=0.8mm,
         anchor=north west,font=\ttfamily\fontsize{7.4}{8.4}\selectfont,text=udsdark,line width=0.5pt,
@@ -137,14 +138,54 @@ One specimen per state: a held-out specimen is a new state.
     \node[chip,draw=udsgreylight,text=udsgrey,path picture={}] (rd) at (44,-34) {README.md};
     \node[say,text=udsgrey,text width=40mm,anchor=west] at ([xshift=2mm]rd.east) {for people; read like any other file};
   \end{tikzpicture}
-  \note{\textbf{22:30--23:30}\par
-    All six files on one agent session, at the moment each one is read.\par
+  \note{\textbf{15:40--16:30}\par
+    Each file on one agent session, at the moment it is read.\par
     AGENTS.md at the start of every session; the glossary and the ADRs when AGENTS.md points to
       them.\par
     The task specification of section 1 comes with the task; the coding standards are read when
       the change is reviewed, by a person or an agent.\par
     The README is for people; the agent reads it like any other file.\par
     Keep each fact in one place and link to it: copies go stale.}
+\end{frame}
+
+% ------------------------------------ the specification of section 1, remembered
+% Slide 5's five cards again, greyed: the theme's colours are redefined for one group only, so the
+% same macros draw them. A stamp repeats slide 5's warning; the strip says where the parts that
+% repeat are now, which the next slide shows card by card.
+\begin{frame}{Remember the bounded task specification?}
+  \begin{tikzpicture}[x=1mm,y=1mm]
+    \useasboundingbox (0,0) rectangle (144,-54);
+    \begingroup
+      \colorlet{udsblue}{udsgreymid}\colorlet{udsdark}{udsgreymid}
+      \foreach \k/\l in {0/Objective,1/Context,2/Constraints,3/Acceptance,4/Verification}
+        {\speccard{\k}{0}{-41.4}{\l}{udsgreypale!60}}
+      \foreach \k/\t in {
+          0/{add \fn{specimen\_folds()} to \fn{src/sem\_seg/\allowbreak data/\allowbreak splitting.py}; use it
+            in the training CLI as \fn{--split specimen}},
+          1/{``sample'' means specimen: one physical sample, column \fn{specimen\_id} of the manifest},
+          2/{leave \fn{data/raw/} and the manifests unchanged; no new dependencies; no GPU jobs},
+          3/{each specimen in exactly one fold; each patch inherits its specimen's fold; same seed, same
+            folds; \fn{ValueError} if \fn{specimen\_id} is missing or there are fewer specimens than folds},
+          4/{\fn{pytest tests/data -q} passes; report changed files, test output and assumptions}}
+        \node[spec body] at (b\k) {\t};
+    \endgroup
+    % slide 5's warning, stamped across the cards
+    \node[rotate=7,draw=udsred,double=white,double distance=0.7pt,line width=0.8pt,
+      rounded corners=1mm,fill=white,fill opacity=0.88,text opacity=1,text=udsred,
+      font=\large\bfseries,inner xsep=3mm,inner ysep=2.2mm] at (72,-21)
+      {\faExclamationTriangle\enspace too much to write for every task};
+    % where those parts are now
+    \fill[bluetint] (0,-48.4) rectangle (144,-54);
+    \fill[udsblue] (0,-48.4) rectangle (1.2,-54);
+    \node[anchor=west,inner sep=0pt,font=\footnotesize,text=udsdark] at (3.6,-51.2)
+      {\textcolor{udsblue}{\faCheck}\enspace what repeats is now in files: \fn{AGENTS.md},
+       \fn{GLOSSARY.md}, ADRs, \fn{CODING\_STANDARDS.md}};
+  \end{tikzpicture}
+  \note{\textbf{16:30--17:00}\par
+    Remember the bounded specification from the start of the talk.\par
+    Every part of it was written by hand, for every task: what a specimen is, which data must not
+      change, how to run the tests, what to report.\par
+    That is the part that repeats, and it now lives in the files of sections 3 and 4.}
 \end{frame}
 
 % ------------------------------------------------ the request, revisited
@@ -178,12 +219,12 @@ One specimen per state: a held-out specimen is a new state.
     % verification
     \node[spec chip] (v1) at (b4) {AGENTS.md};
     \node[spec note] at ([yshift=-0.8mm]v1.south west) {fast check, report};
-    % what the files leave open, the agent has to ask: the clarifying step of the next section
+    % what the files leave open, the agent has to ask: the clarifying step of section 7
     \node[anchor=west,inner sep=0pt,font=\scriptsize,text=udsred] at (0,-49.4)
       {\faQuestionCircle\enspace still open: what no file says, e.g.\ the default number of folds};
   \end{tikzpicture}
-  \note{\textbf{23:30--24:50}\par
-    Back to the request from the first section.\par
+  \note{\textbf{17:00--18:00}\par
+    Now the same request, in the repository we prepared.\par
     With these files in place, one sentence in the project's language is enough.\par
     Four of the five parts now come from files; only the objective is in the request.\par
     The glossary says what a specimen and a fold are.\par
@@ -191,6 +232,6 @@ One specimen per state: a held-out specimen is a new state.
     AGENTS.md carries the boundaries, the test command and what to report.\par
     CODING\_STANDARDS.md makes seeds and input checks part of every review.\par
     What the files leave open, here the default number of folds, is what the clarification step
-      in the next section asks.\par
+      of section 7 asks.\par
     This works only while AGENTS.md points to the files and they are kept current.}
 \end{frame}

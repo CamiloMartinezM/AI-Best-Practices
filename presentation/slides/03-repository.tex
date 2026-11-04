@@ -1,0 +1,187 @@
+\section[Repository]{Preparing the repository}
+\sectionframe{03}{Preparing the repository}
+  {What can the repository tell the agent, so that we do not have to?}
+  {\faFolderOpen}
+
+% ------------------------------------------------------ the layout and its files
+% Left: a standard layout, adapted from Cookiecutter Data Science, with one AGENTS.md. Right: the
+% same repository later, its AGENTS.md split into three files. One picture, so that the arrow can
+% run from one tree to the other: the rows are the theme's folder-tree rows, the pages are drawn
+% here. Both trees start at the same height with a row pitch of 3.5 mm; the arrow leaves the
+% AGENTS.md row on the left (row 9, y = -12.6 - 8 * 3.5) for rows 5 to 7 on the right.
+\begin{frame}[source={DrivenData (2026), Cookiecutter Data Science}]{Setting up the repository}
+  \begin{tikzpicture}[x=1mm,y=1mm,
+      head/.style={anchor=north west,inner sep=0pt,font=\small\bfseries,text=udsdark},
+      page/.style={draw=udsgreylight,fill=white,line width=0.5pt,rounded corners=1.2mm},
+      split/.style={udsblue,line width=0.9pt},
+      splitarrow/.style={split,-{Stealth[length=2mm,width=1.6mm]}}]
+    \useasboundingbox (0,0) rectangle (144,-55);
+    % ---- left: the layout, and a link to the template it follows
+    \node[head] at (0,0) {A standard layout};
+    \node[anchor=north west,inner sep=0pt,font=\footnotesize] at (0,-4.6)
+      {\href{https://cookiecutter-data-science.drivendata.org/\#directory-structure}%
+        {\faGlobe\enspace\underline{\fn{cookiecutter-data-science}}}};
+    \draw[page] (0,-9.4) rectangle (60,-54.4);
+    \begin{scope}[shift={(2.4,-12.6)}]
+      \treestart{note at=30,row height=3.5}
+      \tdir{0}{sem-seg/}{}
+      \tdir{1}{data/raw/}{never edited}
+      \tdir{1}{data/processed/}{made by the code}
+      \tdir{1}{models/}{trained models}
+      \tdir{1}{notebooks/}{exploring}
+      \tdir{1}{reports/figures/}{figures for papers}
+      \tdir{1}{src/sem\_seg/}{the code}
+      \tdir{1}{tests/}{}
+      \tfile{1}{\textcolor{udsblue}{\textbf{AGENTS.md}}}{\textcolor{udsblue}{for the agent}}
+      \tfile{1}{environment.yml}{}
+      \tfile{1}{pyproject.toml}{}
+      \tfile{1}{README.md}{for people}
+    \end{scope}
+    % ---- right: the same repository once AGENTS.md has grown; what stays the same in grey
+    \node[head] at (74,0) {As the project grows};
+    \draw[page] (74,-9.4) rectangle (144,-40.3);
+    \begin{scope}[shift={(76.4,-12.6)}]
+      \treestart{note at=33.6,row height=3.5}
+      \tdir{0}{sem-seg/}{}
+      \tdirgrey{1}{data/ \dots}{as before}
+      \tdirgrey{1}{models/ \dots\ reports/}{}
+      \tdirgrey{1}{src/sem\_seg/, tests/}{}
+      \tfile{1}{\textcolor{udsblue}{\textbf{AGENTS.md}}}{commands, rules, pointers}
+      \tfile{1}{GLOSSARY.md}{the project's words}
+      \tfile{1}{CODING\_STANDARDS.md}{how code is written here}
+      \tfilegrey{1}{environment.yml, \dots}{}
+    \end{scope}
+    \node[anchor=north west,inner sep=0pt,font=\footnotesize,text=udsdark,text width=70mm,
+      align=left] at (74,-43.4) {\fn{AGENTS.md} keeps what every session needs and points to
+      the two new files};
+    % ---- one file becomes three: from the AGENTS.md row on the left to rows 5 to 7 on the right
+    \draw[split] (49.5,-40.6) -- (62,-40.6);% starts clear of the note "for the agent"
+    \foreach \y in {-26.6,-30.1,-33.6} \draw[splitarrow] (62,-40.6) to[out=0,in=180] (74,\y);
+  \end{tikzpicture}
+  \note{\textbf{9:50--10:50}\par
+    Before any file for the agent: a layout that people and agents already know.\par
+    This one follows Cookiecutter Data Science, a template for data projects, with the code in
+      src and its tests beside it: raw data that is never edited, processed data that the code
+      makes, models, notebooks for exploring, figures for papers.\par
+    An agent finds its way in it the way a new colleague does.\par
+    At the root sits AGENTS.md, the one file written for the agent.\par
+    As the project grows, AGENTS.md keeps what every session needs, and two files take the rest:
+      GLOSSARY.md for the project's words, CODING\_STANDARDS.md for how code is written here.}
+\end{frame}
+
+% --------------------------------------------------------------- AGENTS.md
+% The example file beside what such a file should hold and leave out, after the prompting guides
+% of Anthropic and OpenAI (SOURCES.md)
+\begin{frame}[fragile,source={Anthropic (2026), Prompting Claude Opus 5.5 · OpenAI (2026), Using GPT-6}]{\texttt{AGENTS.md}}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.57\textwidth}
+\begin{codefile}[basicstyle=\ttfamily\fontsize{7.2}{8.75}\selectfont]{AGENTS.md}
+# sem-seg
+## Setup and checks
+- Environment: conda env `sem-seg`, activated beforehand
+- Fast check (CPU, synthetic data): `pytest -q`
+- Lint, types: `ruff check`, `mypy src` §\textcolor{udsred}{\sffamily\scriptsize\faArrowLeft\ after every edit}§
+## Conventions
+- Terms: `GLOSSARY.md` (specimen, micrograph, patch) §\smash{\textcolor{udsblue}{\faLink}}§
+- Decisions: `docs/adr/` §\smash{\textcolor{udsblue}{\faLink}}§
+- Lengths in micrometres; pixel size from metadata
+## Boundaries
+- Never write to `data/raw/`; use `data/processed/`
+- No cluster jobs (`sbatch`): the queue is shared
+- Ask before adding a dependency
+## When you finish
+- Report changed files, checks run, open assumptions
+\end{codefile}
+    \end{column}
+    \begin{column}{0.40\textwidth}
+      \begin{tikzpicture}[x=1mm,y=1mm,
+          head/.style={anchor=north west,inner sep=0pt,font=\footnotesize\bfseries},
+          item/.style={anchor=north west,inner sep=0pt,font=\footnotesize,text=udsdark},
+          why/.style={anchor=north west,inner sep=0pt,font=\scriptsize,text=udsgrey}]
+        \useasboundingbox (0,0) rectangle (57,-54);
+        \node[head,text=testgreen] at (0,0) {Put in};
+        \foreach \t [count=\i] in {{commands to set up, test and check},
+            pointers to what the code cannot show,what needs your approval,
+            {when it is done, and what to report},the reason behind a rule}
+          \node[item] at (0,-0.7-\i*4.3) {\textcolor{testgreen}{\faCheck}\enspace\t};
+        \node[head,text=udsred] at (0,-27.8) {Leave out};
+        \foreach \t/\w [count=\i] in {{rules that clash or are out of date}/{the agent may stop and wait},
+            {vague wishes: ``write clean code''}/{name the exact mistake instead},
+            {``think carefully'', ``be thorough''}/{current models already do}} {
+          \node[item] at (0,-25-\i*7.6) {\textcolor{udsred}{\faTimes}\enspace\t};
+          \node[why] at (4.3,-28.8-\i*7.6) {\w};
+        }
+      \end{tikzpicture}
+    \end{column}
+  \end{columns}
+  \note{\textbf{10:50--12:10}\par
+    AGENTS.md is the one file that tools supporting it load at the start of every session.\par
+    It holds what the agent cannot find out alone: the commands to set up, test and check; what
+      the code cannot show, or which file shows it; what needs our approval; when the work is done
+      and what to report.\par
+    Fifteen lines, each preventing a specific mistake, and one says why: the cluster queue is
+      shared.\par
+    The checks of section 2 are here, so the agent runs them after every edit; the boundaries are
+      requests, not locks.\par
+    Today's models follow such files closely: OpenAI notes that its latest model is more
+      sensitive to files such as AGENTS.md, and that unclear or conflicting guidance can make it
+      stop early.\par
+    So leave out rules that clash or are out of date; vague wishes such as write clean code,
+      where naming the exact mistake works better; and lines such as think carefully, which
+      Anthropic advises removing from system prompts, since the model decides how much to
+      think.\par
+    Keep it short, and review it like code.}
+\end{frame}
+
+% ---------------------------------------------------- glossary, standards
+% \tagchip{text}: a tag naming what a file holds
+\newcommand\tagchip[1]{\tikz[baseline=(t.base)]\node[draw=udsblue,fill=bluetint,line width=0.4pt,
+  rounded corners=0.6mm,inner xsep=1mm,inner ysep=0.5mm,font=\scriptsize,text=udsdark] (t) {#1};}
+\begin{frame}[fragile,source={Pocock (2026), mattpocock/skills v1.3.1: domain-modeling, code-review, retro}]{\texttt{GLOSSARY.md} and \texttt{CODING\_STANDARDS.md}}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.485\textwidth}
+      {\scriptsize\color{udsgrey}holds\enspace}\tagchip{term and meaning}\enspace
+        \tagchip{words to avoid}\enspace\tagchip{code name}\par\vskip1.6mm
+\begin{codefile}[basicstyle=\ttfamily\fontsize{7}{8.5}\selectfont]{GLOSSARY.md\enspace\textcolor{udsgreymid}{\sffamily\scriptsize read when pointed to}}
+# Glossary
+Specimen: one physical sample (`specimen_id`).
+  Avoid: §\textcolor{udsred}{\bfseries sample}§, coupon. §\textcolor{udsred}{\sffamily\scriptsize\faArrowLeft\ the word in our request}§
+Area: one imaged region of a specimen.
+Micrograph: one SEM image of an area
+  (`micrograph_id`). Avoid: image, frame.
+Patch: a crop of a micrograph used in
+  training (`patch_id`). Avoid: tile.
+Fold: specimens held out together; every
+  specimen belongs to exactly one fold.
+\end{codefile}
+    \end{column}
+    \begin{column}{0.485\textwidth}
+      {\scriptsize\color{udsgrey}holds\enspace}\tagchip{seeds}\enspace\tagchip{input checks}\enspace
+        \tagchip{tests}\enspace\tagchip{paths}\par\vskip1.6mm
+\begin{codefile}[basicstyle=\ttfamily\fontsize{7}{8.5}\selectfont]{CODING\_STANDARDS.md\enspace\textcolor{udsgreymid}{\sffamily\scriptsize read in review}}
+# Coding standards
+- Every random step takes a `seed`; the
+  same seed gives the same result.
+- Public functions check their inputs and
+  raise `ValueError` naming the problem.
+- Tests call public functions on small,
+  hand-written fixtures, never real data.
+- Expected values come from the fixture,
+  never recomputed the way the code does.
+- Paths come from `config.py`, never
+  written into a function.
+\end{codefile}
+    \end{column}
+  \end{columns}
+  \note{\textbf{12:10--13:30}\par
+    Two files the agent reads only when something points to them.\par
+    A glossary holds the project's terms: what each one means, the words to avoid and the name the
+      code uses for it; our request said sample, and here sample is a word to avoid.\par
+    The clarifying step of section 7 writes terms into it as soon as they are agreed.\par
+    Coding standards hold the rules a reviewer checks: seeds, input checks, how tests are built,
+      where paths come from; a fixture is the small, hand-made input a test runs on.\par
+    In the workflow of section 7 the review step reads it, not the implementing agent, which
+      already carries the most context.\par
+    Rules that a linter can check belong in Ruff's settings instead, so that every run checks
+      them.}
+\end{frame}

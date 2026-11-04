@@ -1,15 +1,12 @@
-% ------------------------------------------------------------------ title
-\begin{frame}[plain,noframenumbering]
-% Drawn inside the frame rather than over the page, so the speaker notes' thumbnail shows it too.
-% The picture's origin is the page's top-left corner: a plain frame's body starts 8 mm in and
-% 2 mm down. Coordinates in mm, y downwards negative; the blue panel bleeds 1 mm past the edges.
-\vbox to 0pt{\vskip-2mm\hbox to 0pt{\hskip-8mm\begin{tikzpicture}[x=1mm,y=1mm]
-  \useasboundingbox (0,0) rectangle (160,-90);
+% \titlepanel: the right of the title slide, which the closing slide repeats: a blue panel with a
+% request typed at a prompt and, above it, the editor where the agent changes the code: one line
+% removed (red), two added (green), the second still being written at a sparkle; a red edge on its
+% left. Inside a full-page tikzpicture[x=1mm,y=1mm] whose origin is the page's top-left corner,
+% y downwards negative; the panel bleeds 1 mm past the edges.
+\newcommand\titlepanel{%
   \coordinate (pnw) at (102,0);
   \fill[udsblue] (102,1) rectangle (161,-91);
-  % a request typed at a prompt, and above it the editor where the agent changes the code: one
-  % line removed (red), two added (green), the second still being written at a sparkle; centred
-  % in the blue right of the red stripe
+  % centred in the blue right of the red stripe
   \begin{scope}[shift={(pnw)},xshift=0.8mm]
     \fill[udsdark] (6,-15) rectangle (52,-60);
     \fill[udsdark!70!black] (6,-15) rectangle (52,-19.5);
@@ -42,7 +39,16 @@
     \draw[udsred!45!white,line width=1.2pt] (8.9,-66.6) -- (10.5,-68) -- (8.9,-69.4);
     \foreach \x/\w in {13/9,23.4/4,28.8/12} \fill[white!85!udsblue] (\x,-67.4) rectangle ++(\w,-1.2);
   \end{scope}
-  \fill[udsred] (102,1) rectangle (103.6,-91);
+  \fill[udsred] (102,1) rectangle (103.6,-91);}
+
+% ------------------------------------------------------------------ title
+\begin{frame}[plain,noframenumbering]
+% Drawn inside the frame rather than over the page, so the speaker notes' thumbnail shows it too.
+% The picture's origin is the page's top-left corner: a plain frame's body starts 8 mm in and
+% 2 mm down.
+\vbox to 0pt{\vskip-2mm\hbox to 0pt{\hskip-8mm\begin{tikzpicture}[x=1mm,y=1mm]
+  \useasboundingbox (0,0) rectangle (160,-90);
+  \titlepanel
   \node[anchor=north west,inner sep=0pt] at (8,-8) {\includegraphics[width=30mm]{\udslogo}};
   \node[anchor=north west,inner sep=0pt,text width=88mm,align=left] at (8,-36) {%
     {\fontsize{25}{29}\selectfont\bfseries\color{udsblue}\inserttitle\par}\vskip2mm
@@ -62,32 +68,32 @@
       how we check the result.}
 \end{frame}
 
-% --------------------------------------------------------------- overview
-\begin{frame}{One task, nine questions}
+% ---------------------------------------------------------------- outline
+\begin{frame}{Outline}
+  % each section's title as on its divider, and the divider's question, shortened to one line
   \small\renewcommand\arraystretch{1.32}\setlength\tabcolsep{4pt}
-  \begin{tabularx}{\textwidth}{@{}>{\leavevmode\color{udsblue}\bfseries}p{4mm}>{\bfseries}p{26mm}X>{\leavevmode\color{udsgrey}\footnotesize}L{44mm}@{}}
+  \begin{tabularx}{\textwidth}{@{}>{\leavevmode\color{udsblue}\bfseries}p{4mm}>{\bfseries}p{61mm}X@{}}
     \toprule
-    1 & Delegation      & What do we provide and what do we check?     & splitting data by specimen\\
-    2 & Version control & How do we keep and review every change?      & git, GitHub, worktrees\\
-    3 & Environment     & What runs the code, and what checks it?      & conda, uv, Ruff, mypy, Pylance\\
-    4 & Repository      & What can the repository tell the agent?      & \fn{AGENTS.md}, \fn{GLOSSARY.md}\\
-    5 & Decisions       & Why does the project work this way?          & ADR-0003\\
-    6 & Workflow        & How does a request become reviewed code?     & skills, Pocock's workflow\\
-    7 & Tests first     & How do tests keep an agent on track?         & \fn{/implement} and \fn{/tdd}\\
-    8 & Verification    & What counts as done, and who decides?        & tests versus scientific validity\\
-    9 & Adoption        & What do I change in my repository first?     & other skill packages, a checklist\\
+    1 & From asking questions to delegating work & What must we provide, and what must we verify?\\
+    2 & Environments and code checks             & Where does our code run, and what checks it?\\
+    3 & Preparing the repository                 & What can the repository tell the agent?\\
+    4 & Architecture Decision Records (ADRs)     & Why does the project work this way?\\
+    5 & Version control with git                 & How do we keep and review every change?\\
+    6 & Tests first                              & How do tests keep an agent on track?\\
+    7 & Skills and an end-to-end workflow        & How does a request become a reviewed change?\\
+    8 & A realistic starting point               & What should I change in my repository first?\\
     \bottomrule
   \end{tabularx}
   \note{\textbf{0:20--1:00}\par
     One running task carries the talk: splitting a segmentation dataset by specimen.\par
-    The nine sections answer nine practical questions.\par
-    Sections 2 and 3 are the groundwork that an agent needs in any project: version control and
-      an environment with automatic checks.\par
-    A thread runs from the first section to the fifth: the better the repository is prepared,
+    The eight sections answer eight practical questions.\par
+    Sections 2 and 5 are the groundwork that an agent needs in any project: an environment with
+      automatic checks, and version control.\par
+    A thread runs from the first section to the fourth: the better the repository is prepared,
       the shorter the request can be.\par
     The repository and its code are illustrative; the micrographs come from our HCCI SEM
       dataset.\par
-    Codex and Matt Pocock's skills are the documented examples; the research-code examples are
-      ours.\par
+    Claude Code, Codex and Matt Pocock's skills are the documented examples; the research-code
+      examples are ours.\par
     Tool behaviour changes quickly; the appendix lists versions and access dates.}
 \end{frame}

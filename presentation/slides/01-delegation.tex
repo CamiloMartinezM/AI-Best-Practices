@@ -50,7 +50,7 @@
 \end{frame}
 
 % -------------------------------------------------------- running example
-\begin{frame}[source={Kapoor \& Narayanan (2023), Patterns 4(9), 100804}]{Running example: split the data by specimen}
+\begin{frame}{Running example: split the data by specimen}
   % oblique view: a point (p,q) of a micrograph lying flat goes to (p + \obs q, \obk q)
   \def\obs{0.5}\def\obk{0.42}
   \def\ow{34}\def\oh{24.51}% overview micrographs, 1000 x 721 px
@@ -213,7 +213,7 @@
     % the cards fill the text width exactly; strokes on their edges must not widen the picture
     \useasboundingbox (0,0) rectangle (144,-54);
     % all five parts written out by hand; which of them files can carry is the subject of
-    % sections 4 and 5, so no head here is a file's
+    % sections 3 and 4, so no head here is a file's
     \foreach \k/\l in {0/Objective,1/Context,2/Constraints,3/Acceptance,4/Verification}
       {\speccard{\k}{0}{-41.4}{\l}{bluetint}}
     \foreach \k/\t in {
@@ -226,7 +226,7 @@
         4/{\fn{pytest tests/data -q} passes; report changed files, test output and assumptions}}
       \node[spec body] at (b\k) {\t};
     % the catch, on the next click: a warning and a question the rest of the talk answers, in a
-    % strip like the red panel of slide 7; the cards' fixed size keeps the slide from moving
+    % strip like the red panel of slide 19; the cards' fixed size keeps the slide from moving
     \only<2->{
       \node[anchor=west,inner sep=0pt,font=\footnotesize\bfseries,text=udsred] at (0,-45) {But\,\dots};
       \fill[redtint] (0,-48.4) rectangle (144,-54);
