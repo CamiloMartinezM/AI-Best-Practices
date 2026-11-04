@@ -6,7 +6,7 @@ A LaTeX Beamer talk on delegating research-code tasks to coding agents. It cover
 
 - [Audience PDF](presentation/build/main.pdf): 57 pages, 47 for the 46 talk slides (slide 5 builds up in two steps) and 10 appendix pages.
 - [Speaker notes](presentation/build/speaker-notes.pdf): 45 pages: one per talk slide (dividers excluded) with the slide image, notes and timing; after slide 29, five pages with the "Why These Skills Exist" section of Pocock's README; and one for each of the two backup slides on uv in the appendix (A3, A4).
-- [Timed outline](OUTLINE.md) and [sources and provenance](SOURCES.md).
+- [Timed outline](OUTLINE.md), [sources and provenance](SOURCES.md), and the [slide style](SLIDE-STYLE.md) to follow for new slides and talks.
 
 ## Files
 
