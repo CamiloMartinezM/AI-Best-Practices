@@ -15,6 +15,31 @@
   pdfsubject={Version control, environments, repository context, workflows and verification for coding agents},
   pdfauthor={Camilo Martínez},colorlinks=true,linkcolor=udsblue,urlcolor=udsblue}
 
+% The theme's footer with the d3M logo in place of the university's, and the frame number alone
+% bottom right. The logo stays within the footer's 6 mm, so the slide area keeps its height.
+\makeatletter
+% The footer's citation keeps each work, between the separators " · " of the frame's source, on one line,
+% so that it breaks only between works.
+\def\dtm@endmark{\dtm@endmark}
+\def\dtm@works#1{\let\dtm@sep\@empty\dtm@work#1 · \dtm@endmark{} · }
+\def\dtm@work#1 · {\ifx\dtm@endmark#1\else
+  \dtm@sep\mbox{#1}\def\dtm@sep{\nobreakspace·\space}\expandafter\dtm@work\fi}
+\setbeamertemplate{footline}{%
+  \vbox to 9mm{\vfill
+    \hbox to\paperwidth{\hskip8mm
+      $\vcenter{\hbox{\includegraphics[height=5.8mm]{assets/d3m.png}}}$\hskip4mm
+      \ifx\dtm@framesource\@empty\else
+        \parbox[c]{108mm}{\fontsize{5.8}{6.8}\selectfont\color{udsgrey}\raggedright
+          \expandafter\dtm@works\expandafter{\dtm@framesource}}%
+      \fi\hfill
+      \ifbeamer@noframenumbering\else
+        $\vcenter{\hbox{\usebeamerfont{footline}\color{udsblue}\bfseries\insertframenumber}}$%
+      \fi
+      \hskip8mm}%
+    \vskip3mm}%
+}
+\makeatother
+
 % Audience PDF hides notes; speaker-notes.tex sets \notesmode before \input{main}.
 \providecommand\notesmode{hide notes}
 \setbeameroption{\notesmode}

@@ -86,7 +86,7 @@ Cards and panels use 8 % tints of these colours. Terminals are near black (12, 1
 - Titles are 16.5 pt, bold and blue; body text 9 to 10 pt; labels 7 to 8 pt. Nothing the audience must read is smaller than 7 pt, code and equations included. When text does not fit, change the layout (columns, line breaks, a split) and keep the size.
 - Content starts 4 mm below the title on every slide. The gap from a label to its content is always the same, and a larger, equal gap separates groups.
 - Draw on a millimetre grid and fix the size of each picture, so that nothing shifts from slide to slide. Nothing overlaps: arrows stop short of text, and markers sit beside lines.
-- A thin navigation bar at the top shows the sections with a dot per slide; the footer shows the logo, the citation and the slide number. Appendix slides are numbered A1, A2 and so on.
+- A thin navigation bar at the top shows the sections with a dot per slide; the footer shows the group's logo at the left, then the citation, and the slide number alone at the right. Appendix slides are numbered A1, A2 and so on.
 - Text inside a figure taken as an image, such as a plot from a paper or a screenshot, may be smaller than 7 pt; its numbered markers or its caption carry the message.
 
 ## Words on slides
@@ -114,7 +114,7 @@ Slides, notes and README stay free of meta talk: nothing about earlier versions 
 
 ## Citations
 
-- The footer carries citations only: "Author (year), short title", separated by " · ", two or three at most. No sentences and no badges.
+- The footer carries citations only: "Author (year), short title", separated by " · ", two or three at most. No sentences and no badges. A footer that needs two lines breaks between works, never inside one.
 - A figure taken from a paper carries that paper's citation on its slide; a redrawn figure is cited as "after Author (year)".
 - The full references go on appendix slides, grouped by topic.
 - A sources file records what each slide takes from where, how each figure or screenshot was made, so that it can be made again, and when each web page was read. A notices file lists third-party material with its licence.
